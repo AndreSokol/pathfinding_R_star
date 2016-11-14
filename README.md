@@ -6,10 +6,11 @@ Course project for HSE Computer Sceince Faculty
 **Mentor:** [Yakovlev K. S.](//github.com/konstantin-yakovlev)
 
 
-## Contents
-> 1. [Introduction](#introduction)    
-> 2. [Tools used](#tools-used)    
-> 3. [Work plan](#work-plan)    
+### Contents
+
+1. [Introduction](#introduction)    
+2. [Tools used](#tools-used)    
+3. [Work plan](#work-plan)    
 
 
 ## Introduction
