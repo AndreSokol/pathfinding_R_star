@@ -13,10 +13,10 @@ Course project for HSE Computer Sceince Faculty
 
 This work is based on code written for ISA RAS researches in order to achieve compability with their huge set of pre-generated tests. That is the main reason to choose the following tools:
 
-**Programming language:** C++, XML (for input files)
-**Compiler:** qmake
-**IDE:** QtCreator 5.3
-**External library:** TinyXML 2 (for parsing input files)
+**Programming language:** C++, XML (for input files)    
+**IDE:** QtCreator 3.6.1    
+**Compiler:** qmake + MinGW         
+**External library:** TinyXML 2 (for parsing input files)    
 
 ### Work plan
 
