@@ -5,11 +5,18 @@ Course project for HSE Computer Sceince Faculty
 **Group:** БПМИ156    
 **Mentor:** [Yakovlev K. S.](//github.com/konstantin-yakovlev)
 
-### Introduction
+
+## Contents
+> 1. [Introduction](#introduction)    
+> 2. [Tools used](#tools-used)    
+> 3. [Work plan](#work-plan)    
+
+
+## Introduction
 
 *Abstract*
 
-### Tools used
+## Tools used
 
 This work is based on code written for ISA RAS researches in order to achieve compability with their huge set of pre-generated tests. That is the main reason to choose the following tools:
 
@@ -18,5 +25,5 @@ This work is based on code written for ISA RAS researches in order to achieve co
 **Compiler:** qmake + MinGW         
 **External library:** TinyXML 2 (for parsing input files)    
 
-### Work plan
+## Work plan
 
