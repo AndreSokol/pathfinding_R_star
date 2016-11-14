@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root>
+    <desc>Really Small Map for Really Small Test</desc>
+    <map>
+        <width>2</width>
+        <height>2</height>
+        <grid>
+            <row number="1">0 1</row>
+            <row number="2">1 0</row>
+        </grid>
+    </map>
+    <algorithm>
+    </algorithm>
+    <options>
+    </options>
+</root>

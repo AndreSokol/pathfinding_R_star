@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root>
+    <desc>This file contains task for plaining system (Pathfinding)</desc>
+    <map>
+        <width>10</width>
+        <height>10</height>
+        <cellsize>24</cellsize>
+        <startx>8</startx>
+        <starty>1</starty>
+        <finishx>1</finishx>
+        <finishy>8</finishy>
+        <grid>
+            <row number="1" >0 0 0 0 0 0 0 0 0 0</row>
+            <row number="2" >0 0 0 0 0 0 0 0 0 0</row>
+            <row number="3" >0 1 1 1 1 1 1 1 0 0</row>
+            <row number="4" >0 0 0 0 0 0 0 1 0 0</row>
+            <row number="5" >0 0 0 0 0 0 0 1 0 0</row>
+            <row number="6" >0 0 0 0 0 0 0 1 0 0</row>
+            <row number="7" >0 0 0 0 0 0 0 0 0 0</row>
+            <row number="8" >0 0 0 0 0 0 0 0 0 0</row>
+            <row number="9" >0 0 0 0 0 0 0 0 0 0</row>
+            <row number="10">0 0 0 0 0 0 0 0 0 0</row>
+        </grid>
+    </map>
+    <algorithm>
+        <searchtype>astar</searchtype>
+        <metrictype>euclid</metrictype>
+        <hweight>1</hweight>
+        <breakingties>g-max</breakingties>
+        <linecost>1</linecost>
+        <diagonalcost>1.41421</diagonalcost>
+        <allowdiagonal>1</allowdiagonal>
+        <allowsqueeze>0</allowsqueeze>
+    </algorithm>
+    <options>
+        <loglevel>1</loglevel>
+        <logpath />
+        <logfilename />
+    </options>
+</root>

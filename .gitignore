@@ -1,0 +1,8 @@
+debug/
+release/
+
+.idea/
+test_image.bmp
+
+**/*.pro.user
+resources/*.txt
