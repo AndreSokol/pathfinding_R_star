@@ -9,6 +9,7 @@ struct Node
     int i, j;
     mutable double F, g, H;
     mutable const Node *parent = nullptr;
+    bool AVOID = false;
     Node(){}
     Node(int i, int j){this->i=i;this->j=j;}
 

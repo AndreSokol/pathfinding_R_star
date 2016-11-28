@@ -53,8 +53,8 @@
         <logfilename />
     </options>
     <log>
-        <mapfilename>../resources/1111111-sample.xml</mapfilename>
-        <summary numberofsteps="3" nodescreated="6" length="9.89949" time="0.0005128" />
+        <mapfilename>..\resources\1111111-sample.xml</mapfilename>
+        <summary numberofsteps="3" nodescreated="6" length="9.89949" time="0" />
         <path>
             <row number="0">0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 </row>
             <row number="1">0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 </row>
