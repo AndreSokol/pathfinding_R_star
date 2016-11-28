@@ -1,14 +1,13 @@
 from PIL import Image, ImageDraw
 import os, sys
 
-
 def drawSquare(xOffset, yOffset, color):
     global im_draw, BLOCK_SIZE
     im_draw.rectangle([xOffset * BLOCK_SIZE, yOffset * BLOCK_SIZE, (xOffset + 1) * BLOCK_SIZE, (yOffset + 1) * BLOCK_SIZE], color)
 
 
 if len(sys.argv) not in (3, 4):
-    print("Usage: " + sys.argv[0] + " <path_to_xml_log_file> <cell_size_in_pixels> [-map_only|-theta]")
+    print("Usage: " + sys.argv[0] + " <path_to_xml_file> <cell_size_in_pixels> [-map_only|-theta]")
     exit()
 
 MAP_ONLY = False
@@ -99,7 +98,7 @@ if MAP_ONLY:
     drawSquare(finish[0], finish[1], YELLOW_COLOR)
     
     im.save("test_image.bmp")
-    print("Image generated")
+    print("Image generated\nStart is RED, finish is YELLOW")
     exit()
 
 while newline != "<hplevel>":
