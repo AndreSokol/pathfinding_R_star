@@ -5,10 +5,10 @@
         <width>25</width>
         <height>25</height>
         <cellsize>24</cellsize>
-        <startx>13</startx>
-        <starty>23</starty>
-        <finishx>6</finishx>
-        <finishy>18</finishy>
+        <startx>6</startx>
+        <starty>18</starty>
+        <finishx>13</finishx>
+        <finishy>23</finishy>
         <grid>
             <row number="1">0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 </row>
             <row number="2">0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 </row>
@@ -29,12 +29,12 @@
             <row number="19">0 0 0 0 0 0 0 0 0 0 1 1 1 0 1 0 0 0 0 0 0 0 0 0 0 </row>
             <row number="20">0 0 0 0 0 0 0 0 0 0 1 0 1 0 1 0 0 0 0 0 0 0 0 0 0 </row>
             <row number="21">0 0 0 0 0 0 0 0 0 0 1 0 1 0 1 0 0 0 0 0 0 0 0 0 0 </row>
-            <row number="22">1 1 1 1 1 1 1 0 0 0 1 1 1 0 1 0 0 0 0 0 0 0 0 0 0 </row>
+            <row number="22">1 1 1 1 1 0 0 0 0 0 1 1 1 0 1 0 0 0 0 0 0 0 0 0 0 </row>
             <row number="23">0 0 0 0 0 0 1 0 0 0 0 0 1 0 1 0 0 0 0 0 0 0 0 0 0 </row>
-            <row number="24">0 0 0 0 0 0 1 0 0 0 0 0 1 1 1 0 0 0 0 0 0 0 0 0 0 </row>
-            <row number="25">0 0 0 0 0 0 1 0 0 0 0 0 1 1 1 0 0 0 0 0 0 0 0 0 0 </row>
-            <row number="16">0 0 0 0 0 0 1 0 0 0 0 0 1 0 1 0 0 0 0 0 0 0 0 0 0 </row>
-            <row number="3" >0 0 0 0 0 0 1 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 </row>
+            <row number="24">0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 </row>
+            <row number="25">0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 </row>
+            <row number="16">0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 </row>
+            <row number="3" >0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 </row>
         </grid>
     </map>
     <algorithm>

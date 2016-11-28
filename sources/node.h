@@ -10,6 +10,7 @@ struct Node
     mutable double F, g, H;
     mutable const Node *parent = nullptr;
     bool AVOID = false;
+    bool local_path_found = false;
     Node(){}
     Node(int i, int j){this->i=i;this->j=j;}
 

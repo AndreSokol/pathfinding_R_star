@@ -14,6 +14,14 @@ Astar::Astar(double w, int BT, int SL)
     hweight = w;
     breakingties = BT;
     sizelimit = SL;
+    std::cerr << SL << std::endl;
+}
+
+void Astar::setAlternativePoints(const Node &start, const Node &finish)
+{
+    alt_start = start;
+    alt_finish = finish;
+    alt_points_set = true;
 }
 
 Astar::~Astar()
@@ -28,14 +36,21 @@ SearchResult Astar::startSearch(ILogger *Logger, const Map &Map, const Environme
 
     auto start_time = std::chrono::system_clock::now();
 
-    Node start;
-    start.i = Map.start_i;
-    start.j = Map.start_j;
-    start.g = 0;
+    Node start, goal;
+    if (alt_points_set) {
+        start.i = alt_start.i;
+        start.j = alt_start.j;
 
-    Node goal;
-    goal.i = Map.goal_i;
-    goal.j = Map.goal_j;
+        goal.i = alt_finish.i;
+        goal.j = alt_finish.j;
+    } else {
+        start.i = Map.start_i;
+        start.j = Map.start_j;
+
+        goal.i = Map.goal_i;
+        goal.j = Map.goal_j;
+    }
+    start.g = 0;
 
     open.push(start);
 
@@ -44,7 +59,7 @@ SearchResult Astar::startSearch(ILogger *Logger, const Map &Map, const Environme
 
     Node current_node, new_node;
     bool is_diagonal;
-    while (!open.empty()) {
+    while (!open.empty() && sresult.numberofsteps < sizelimit) {
         current_node = open.pop();
         if (closed.count(current_node) != 0) continue;
 

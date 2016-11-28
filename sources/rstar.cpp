@@ -6,6 +6,10 @@
 #include "opencontainer.h"
 #include <unordered_set>
 
+#include "isearch.h"
+#include "astar.h"
+#include "searchresult.h"
+
 Rstar::Rstar()
 {
 
@@ -23,7 +27,7 @@ Rstar::~Rstar()
 
 }
 
-SearchResult Rstar::startSearch(ILogger *Logger, const Map &Map, const EnvironmentOptions &options) {
+SearchResult Rstar::startSearch(ILogger *logger, const Map &map, const EnvironmentOptions &options) {
     std::unordered_set<Node> closed;
 
     OpenContainer<Node> open("g-max");
@@ -34,13 +38,13 @@ SearchResult Rstar::startSearch(ILogger *Logger, const Map &Map, const Environme
     //auto start_time = std::chrono::system_clock::now();
 
     Node start;
-    start.i = Map.start_i;
-    start.j = Map.start_j;
+    start.i = map.start_i;
+    start.j = map.start_j;
     start.g = 0;
 
     Node goal;
-    goal.i = Map.goal_i;
-    goal.j = Map.goal_j;
+    goal.i = map.goal_i;
+    goal.j = map.goal_j;
 
     open.push(start);
 
@@ -49,16 +53,19 @@ SearchResult Rstar::startSearch(ILogger *Logger, const Map &Map, const Environme
 
 
     Node current_node;
-    while(!open.empty()) {
-        current_node = open.pop();
-    }
+
+    findLocalPath(goal, start, map, open, logger, options);
 
     return sresult;
 }
 
-void Rstar::findLocalPath(const Node &node, const Node &parent_node, const OpenContainer &open)
+void Rstar::findLocalPath(Node &node, const Node &parent_node, const Map &map, const OpenContainer<Node> &open,
+                          ILogger *logger, const EnvironmentOptions &options)
 {
-
+    Astar localSearch(hweight, breakingties, -1/*local_search_step_limit*/);
+    localSearch.setAlternativePoints(parent_node, node);
+    SearchResult localSearchResult = localSearch.startSearch(logger, map, options);
+    sresult = localSearchResult;
 }
 
 void Rstar::calculateHeuristic(Node & a, const Map &map, const EnvironmentOptions &options)
@@ -76,3 +83,11 @@ void Rstar::calculateHeuristic(Node & a, const Map &map, const EnvironmentOption
 
     a.F += hweight * a.H;
 }
+
+/*void Rstar::reevaluateNode(Node &node)
+{
+    findLocalPath(node);
+    if (!node.local_path_found) {
+        return;
+    }
+}*/

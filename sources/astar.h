@@ -8,17 +8,25 @@
 
 class Astar : public ISearch
 {
-    public:
-        Astar();
-        Astar(double weight, int BT, int SL);
-        ~Astar();
-        SearchResult startSearch(ILogger *Logger, const Map &Map, const EnvironmentOptions &options);
-        bool F_cmp(Node, Node);
+public:
+    Astar();
+    Astar(double weight, int BT, int SL);
+    Astar(double weight, int BT, int SL, const Node &start, const Node &finish);
+    ~Astar();
+    SearchResult startSearch(ILogger *Logger, const Map &Map, const EnvironmentOptions &options);
+    bool F_cmp(Node, Node);
 
-    protected:
-        virtual void updateParent(Node &node, const Map &map, const EnvironmentOptions &options);
-        virtual void calculateHeuristic(Node &a, const Map &map, const EnvironmentOptions &options);
-        virtual double getHopLength(const Node &a, const EnvironmentOptions &options);
+    void setAlternativePoints(const Node &start, const Node &finish);
+
+protected:
+    virtual void updateParent(Node &node, const Map &map, const EnvironmentOptions &options);
+    virtual void calculateHeuristic(Node &a, const Map &map, const EnvironmentOptions &options);
+    virtual double getHopLength(const Node &a, const EnvironmentOptions &options);
+
+private:
+    Node alt_start;
+    Node alt_finish;
+    bool alt_points_set = false;
 };
 
 #endif

@@ -14,15 +14,19 @@ public:
     Rstar();
     Rstar(double weight, int BT, int SL);
     ~Rstar();
-    SearchResult startSearch(ILogger *Logger, const Map &Map, const EnvironmentOptions &options);
+    SearchResult startSearch(ILogger *logger, const Map &map, const EnvironmentOptions &options);
     //bool F_cmp(Node, Node);
 
 protected:
-    void findLocalPath(const Node &node, const Node &parent_node, const OpenContainer &open);
+    void findLocalPath(Node &node, const Node &parent_node, const Map &map, const OpenContainer<Node> &open,
+                       ILogger *logger, const EnvironmentOptions &options);
     void calculateHeuristic(Node &a, const Map &map, const EnvironmentOptions &options);
-    void updateNode(Node &node, const Map &map, const EnvironmentOptions &options);
+    //void updateNode(Node &node, const Map &map, const EnvironmentOptions &options);
+    //void reevaluateNode(Node &node);
     //virtual double getHopLength(const Node &a, const EnvironmentOptions &options);
 
+    size_t number_of_children = 10;
+    size_t local_search_step_limit = 100;
 };
 
 #endif // RSTAR_H
