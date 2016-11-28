@@ -30,6 +30,30 @@ print("Generating from file: '" + pathToTestedFile + "'...")
 testedFile = open(pathToTestedFile)
 
 if MAP_ONLY:
+
+    start = [];
+    finish = [];
+    
+    newline = testedFile.readline().strip()
+    while newline[0:6] != "<start":
+        if newline == "":
+            print("Error!")
+            exit()
+        newline = testedFile.readline().strip()
+
+    start.append(int(newline[8:-9]))
+    newline = testedFile.readline().strip()
+    start.append(int(newline[8:-9]))
+
+    print("Start point detected:", "(" + str(start[0]) + ", " + str(start[1]) + ")")
+    
+    newline = testedFile.readline().strip()
+    finish.append(int(newline[9:-10]))
+    newline = testedFile.readline().strip()
+    finish.append(int(newline[9:-10]))
+    
+    print("Finish point detected:", "(" + str(finish[0]) + ", " + str(finish[1]) + ")")
+
     newline = testedFile.readline().strip()
     while newline != "<grid>":
         if newline == "":
@@ -71,6 +95,9 @@ for i in range(len(mapContainer)):
     print((i + 1) / len(mapContainer) * 100, "% generated", sep="")
 
 if MAP_ONLY:
+    drawSquare(start[0], start[1], RED_COLOR)
+    drawSquare(finish[0], finish[1], YELLOW_COLOR)
+    
     im.save("test_image.bmp")
     print("Image generated")
     exit()
