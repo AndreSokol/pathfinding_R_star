@@ -3,12 +3,14 @@
 
 #include <cstdio>
 #include <functional>
+#include <utility>
 
 struct Node
 {
     int i, j;
     mutable double F, g, H;
     mutable const Node *parent = nullptr;
+    std::pair<int,int> parent_coords;
     bool AVOID = false;
     bool local_path_found = false;
     Node(){}

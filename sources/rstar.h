@@ -8,6 +8,9 @@
 #include "environmentoptions.h"
 #include "opencontainer.h"
 
+#include <vector>
+#include <utility>
+
 class Rstar : public ISearch
 {
 public:
@@ -18,15 +21,17 @@ public:
     //bool F_cmp(Node, Node);
 
 protected:
-    void findLocalPath(Node &node, const Node &parent_node, const Map &map, const OpenContainer<Node> &open,
-                       ILogger *logger, const EnvironmentOptions &options);
+    bool findLocalPath(const Node &node, const Node &parent_node, const Map &map,
+                       ILogger *logger, const EnvironmentOptions &options, int localSearchStepLimit);
     void calculateHeuristic(Node &a, const Map &map, const EnvironmentOptions &options);
     //void updateNode(Node &node, const Map &map, const EnvironmentOptions &options);
     //void reevaluateNode(Node &node);
     //virtual double getHopLength(const Node &a, const EnvironmentOptions &options);
 
-    size_t number_of_children = 10;
-    size_t local_search_step_limit = 100;
+    std::vector< std::pair<int,int> > generateSuccessors(const Node &node, const Map &map);
+    int local_search_step_limit = 100;
+    size_t number_of_successors = 10;
+    size_t distance_to_successors = 20;
 };
 
 #endif // RSTAR_H
