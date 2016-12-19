@@ -34,5 +34,5 @@ This work is based on code written for ISA RAS researches in order to achieve co
 
 **Dec 2016 - Jan 2017**: study existing work on R\*-search    
 **Jan 2017 - Feb 2017**: implement R\*-search and conduct tests    
-**Feb 2017 - Mar 2017**: theoretical work on possible improvments of R\*
+**Feb 2017 - Mar 2017**: theoretical work on possible improvments of R\*    
 **Mar 2017 - Apr 2017**: implement improvments, conduct tests
