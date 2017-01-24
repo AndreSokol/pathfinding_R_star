@@ -17,8 +17,8 @@ private:
         }
 
         bool operator() (const T &a, const T &b) const {
-            if      (a.AVOID && !b.AVOID) return true;
-            else if (!a.AVOID && b.AVOID) return false;
+            if      (a.AVOID && !b.AVOID) return false;
+            else if (!a.AVOID && b.AVOID) return true;
 
             if      (a.F < b.F) return true;
             else if (a.F > b.F) return false;

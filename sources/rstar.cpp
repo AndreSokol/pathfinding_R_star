@@ -4,6 +4,7 @@
 #include "map.h"
 #include "node.h"
 #include "opencontainer.h"
+#include "list.h"
 #include <unordered_set>
 #include <random>
 #include <ctime>
@@ -36,9 +37,6 @@ SearchResult Rstar::startSearch(ILogger *logger, const Map &map, const Environme
 
     OpenContainer<Node> open("g-max");
 
-    //size_t NUMBER_OF_CHILDREN = 10;
-    //size_t STEPS_UNTIL_STOP = 100;
-
     //auto start_time = std::chrono::system_clock::now();
 
     Node start;
@@ -52,9 +50,6 @@ SearchResult Rstar::startSearch(ILogger *logger, const Map &map, const Environme
 
     open.push(start);
 
-    sresult.pathfound = false;
-    sresult.numberofsteps = 0;
-
     Node current_node, child_node;
 
     bool localPathFound;
@@ -63,17 +58,23 @@ SearchResult Rstar::startSearch(ILogger *logger, const Map &map, const Environme
         current_node = open.pop();
         //if (closed.count(current_node) != 0) continue;
 
-        if (current_node.AVOID) {
-            localPathFound = findLocalPath(current_node, *current_node.parent, map, logger, options, -1);
+        if (current_node.AVOID && start != current_node) {
+            localPathFound = findLocalPath(current_node, *current_node.parent, map, logger, options, -1).pathfound;
             // no step limit if already marked AVOID
         }
-        else {
+        else if (start != current_node) {
             localPathFound = findLocalPath(current_node, *current_node.parent, map,
-                                           logger, options, local_search_step_limit);
+                                           logger, options, local_search_step_limit).pathfound;
         }
 
 
-        if(localPathFound) {
+        if(localPathFound || start == current_node) {
+
+            if (current_node == goal) {
+                sresult.pathfound = true;
+                break;
+            }
+
             auto current_node_iterator = closed.insert(current_node).first;
 
             for (auto child_coords : generateSuccessors(current_node, map)) {
@@ -92,16 +93,41 @@ SearchResult Rstar::startSearch(ILogger *logger, const Map &map, const Environme
         }
     }
 
+    if (sresult.pathfound) {
+
+        sresult.hppath = new NodeList();
+        sresult.lppath = new NodeList();
+
+        SearchResult localSearchResult;
+        while (current_node.parent != nullptr) {
+            localSearchResult = findLocalPath(current_node, *current_node.parent,
+                                              map, logger, options, -1);
+            sresult.JoinLpPaths( localSearchResult );
+            sresult.hppath->push_front(current_node);
+            current_node = *current_node.parent;
+        }
+
+        sresult.hppath->push_front(current_node); // add start node
+    }
+
     return sresult;
 }
 
-bool Rstar::findLocalPath(const Node &node, const Node &parent_node, const Map &map,
+SearchResult Rstar::findLocalPath(const Node &node, const Node &parent_node, const Map &map,
                           ILogger *logger, const EnvironmentOptions &options, int localSearchStepLimit)
 {
+    //std::cerr << node.i << " " << node.j << " -> "
+    //          << parent_node.i << " " << parent_node.j << "... ";
     Astar localSearch(hweight, breakingties, localSearchStepLimit);
     localSearch.setAlternativePoints(parent_node, node);
     SearchResult localSearchResult = localSearch.startSearch(logger, map, options);
-    return localSearchResult.pathfound;
+
+    //----
+    //if (localSearchResult.pathfound) std::cerr << " Found path" << std::endl;
+    //else std::cerr << " nope" << std::endl;
+    //----
+
+    return localSearchResult;
 }
 
 void Rstar::calculateHeuristic(Node & a, const Map &map, const EnvironmentOptions &options)
@@ -157,13 +183,16 @@ std::vector<std::pair<int, int> > Rstar::generateSuccessors(const Node &node, co
         successors.push_back(successor);
     }
 
+    if ((node.i - map.goal_i) * (node.i - map.goal_i) +
+            (node.j - map.goal_j) * (node.j - map.goal_j) <=
+                (int) (distance_to_successors * distance_to_successors)) {
+        successors.push_back(std::pair<int, int> (map.goal_i, map.goal_j));
+    }
+
+    //std::cerr << "For node " << node.i <<  " " << node.j << " generated:" << std::endl;
+    //for (auto a : successors) {
+    //    std::cerr << ">> " << a.first << " " << a.second << std::endl;
+    //}
+
     return successors;
 }
-
-/*void Rstar::reevaluateNode(Node &node)
-{
-    findLocalPath(node);
-    if (!node.local_path_found) {
-        return;
-    }
-}*/

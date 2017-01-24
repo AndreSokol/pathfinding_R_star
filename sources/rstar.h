@@ -21,7 +21,7 @@ public:
     //bool F_cmp(Node, Node);
 
 protected:
-    bool findLocalPath(const Node &node, const Node &parent_node, const Map &map,
+    SearchResult findLocalPath(const Node &node, const Node &parent_node, const Map &map,
                        ILogger *logger, const EnvironmentOptions &options, int localSearchStepLimit);
     void calculateHeuristic(Node &a, const Map &map, const EnvironmentOptions &options);
     //void updateNode(Node &node, const Map &map, const EnvironmentOptions &options);
@@ -31,7 +31,7 @@ protected:
     std::vector< std::pair<int,int> > generateSuccessors(const Node &node, const Map &map);
     int local_search_step_limit = 100;
     size_t number_of_successors = 10;
-    size_t distance_to_successors = 20;
+    size_t distance_to_successors = 100;
 };
 
 #endif // RSTAR_H

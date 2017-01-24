@@ -25,14 +25,16 @@ struct SearchResult
             time = 0;
         }
 
-        /*void push_front_lppath(Node n) {
-            lppath = lppath->push_front(n);
+        void JoinLpPaths (SearchResult to_append) {
+            pathlength += to_append.pathlength;
+
+            auto it = to_append.lppath->List.end();
+            it--;
+            for (; it != to_append.lppath->List.begin(); it--) {
+                lppath->push_front(*it);
+            }
+            lppath->push_front(*it);
         }
-
-        void push_front_hppath(Node n) {
-            hppath = hppath->push_front(n);
-        }*/
-
 };
 
 #endif

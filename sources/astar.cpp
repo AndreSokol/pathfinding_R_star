@@ -14,7 +14,7 @@ Astar::Astar(double w, int BT, int SL)
     hweight = w;
     breakingties = BT;
     sizelimit = SL;
-    std::cerr << SL << std::endl;
+    //std::cerr << SL << std::endl;
 }
 
 void Astar::setAlternativePoints(const Node &start, const Node &finish)

@@ -29,6 +29,10 @@ struct Node
         return a.i == b.i && a.j == b.j;
     }
 
+    friend bool operator!=(const Node & a, const Node & b) {
+        return !(a == b);
+    }
+
     friend bool operator<(const Node & a, const Node & b) {
         if(a.i == b.i) return a.j < b.j;
         return a.i < b.i;
