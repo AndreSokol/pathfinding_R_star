@@ -15,7 +15,11 @@ Course project for HSE Computer Sceince Faculty
 
 ## Introduction
 
-*Abstract*
+Problem of finding path comes in different types of practical use, such as, for example, artifical intelligence systems. One important aspect of the problem is resource limitations - increase of map size causes dramatic growth of amount of memory and time required and in real life search agents possess very little of them.
+
+History of this problem can be started from the article *'A note on two problems in connexion with graphs'* written by E. W. Dijkstra in 1959. After that big milestones were A\* and Jump-Point search algorithms improved performance a lot (these algorithms were researched and implemented during the [summer internship](//github.com/AndreSokol/pathfinding_algorithms)).
+
+In this work I will research the R\*-search also known as randomized A\*-search and try to improve its performance.
 
 ## Tools used
 
@@ -28,3 +32,7 @@ This work is based on code written for ISA RAS researches in order to achieve co
 
 ## Work plan
 
+**Dec 2016 - Jan 2017**: study existing work on R\*-search    
+**Jan 2017 - Feb 2017**: implement R\*-search and conduct tests    
+**Feb 2017 - Mar 2017**: theoretical work on possible improvments of R\*    
+**Mar 2017 - Apr 2017**: implement improvments, conduct tests
