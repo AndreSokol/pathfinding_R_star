@@ -15,6 +15,10 @@
 #include "astar.h"
 #include "searchresult.h"
 
+
+const double PI = 3.1415926;
+
+
 Rstar::Rstar()
 {
 
@@ -55,6 +59,7 @@ SearchResult Rstar::startSearch(ILogger *logger, const Map &map, const Environme
     bool localPathFound;
 
     while(!open.empty()) {
+        //std::cerr << "$ " << open.size() << "\n";
         current_node = open.pop();
         //if (closed.count(current_node) != 0) continue;
 
@@ -75,9 +80,12 @@ SearchResult Rstar::startSearch(ILogger *logger, const Map &map, const Environme
                 break;
             }
 
+            std::cerr << "Closed size: " << closed.size() + 1 << "\n";
+
             auto current_node_iterator = closed.insert(current_node).first;
 
             for (auto child_coords : generateSuccessors(current_node, map)) {
+                //std::cerr << "$$ " << open.size() << "\n";
                 child_node = Node(child_coords.first, child_coords.second);
 
                 child_node.parent = &(*current_node_iterator); // FIXME: not sure all this is a must
@@ -91,6 +99,10 @@ SearchResult Rstar::startSearch(ILogger *logger, const Map &map, const Environme
             current_node.AVOID = true;
             open.push(current_node);
         }
+        else {
+            //
+        }
+
     }
 
     if (sresult.pathfound) {
@@ -152,7 +164,7 @@ std::vector<std::pair<int, int> > Rstar::generateSuccessors(const Node &node, co
 
     std::random_device random_device;
     std::mt19937 generator(random_device());
-    std::uniform_real_distribution<> distribution(-1, 1);
+    std::uniform_real_distribution<> distribution(0, PI);
 
     long double angle;
 
@@ -160,13 +172,28 @@ std::vector<std::pair<int, int> > Rstar::generateSuccessors(const Node &node, co
         successor_dj;
     std::pair<int, int> successor;
 
+    if ((node.i - map.goal_i) * (node.i - map.goal_i) +
+            (node.j - map.goal_j) * (node.j - map.goal_j) <=
+                (int) (distance_to_successors * distance_to_successors)) {
+        successors.push_back(std::pair<int, int> (map.goal_i, map.goal_j));
+    }
+
+    if (map.height < distance_to_successors && map.width < distance_to_successors) {
+        std::cerr << "[WARNING] Distance to successors is bigger than the map \n";
+        return successors;
+    }
+
     for(size_t i = 0; i < number_of_successors; i++) {
         angle = distribution(generator);
-        successor_di = ((long double) distance_to_successors) * std::acos(angle);
-        successor_dj = ((long double) distance_to_successors) * std::asin(angle);
+        successor_di = ((long double) distance_to_successors) * std::cos(angle);
+        successor_dj = ((long double) distance_to_successors) * std::sin(angle);
+
+        //std::cerr << angle << " " << std::cos(angle) << " " << std::sin(angle) << std::endl;
 
         successor.first = node.i + successor_di;
         successor.second = node.j + successor_dj;
+
+        //std::cerr << successors.size() << std::endl;
 
         if(!map.CellOnGrid(successor.first, successor.second)) {
             i--;
@@ -181,12 +208,6 @@ std::vector<std::pair<int, int> > Rstar::generateSuccessors(const Node &node, co
         }
 
         successors.push_back(successor);
-    }
-
-    if ((node.i - map.goal_i) * (node.i - map.goal_i) +
-            (node.j - map.goal_j) * (node.j - map.goal_j) <=
-                (int) (distance_to_successors * distance_to_successors)) {
-        successors.push_back(std::pair<int, int> (map.goal_i, map.goal_j));
     }
 
     //std::cerr << "For node " << node.i <<  " " << node.j << " generated:" << std::endl;

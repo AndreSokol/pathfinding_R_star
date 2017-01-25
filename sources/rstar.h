@@ -29,9 +29,9 @@ protected:
     //virtual double getHopLength(const Node &a, const EnvironmentOptions &options);
 
     std::vector< std::pair<int,int> > generateSuccessors(const Node &node, const Map &map);
-    int local_search_step_limit = 100;
+    int local_search_step_limit = 100000;
     size_t number_of_successors = 10;
-    size_t distance_to_successors = 100;
+    size_t distance_to_successors = 50;
 };
 
 #endif // RSTAR_H
