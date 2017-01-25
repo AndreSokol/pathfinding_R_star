@@ -523,7 +523,7 @@
     </map>
     <algorithm>
         <metrictype>euclid</metrictype>
-        <searchtype>rstar</searchtype>
+        <searchtype>astar</searchtype>
         <hweight>1</hweight>
         <breakingties>g-max</breakingties>
         <linecost>1</linecost>

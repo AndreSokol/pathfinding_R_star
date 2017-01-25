@@ -14,13 +14,12 @@ Astar::Astar(double w, int BT, int SL)
     hweight = w;
     breakingties = BT;
     sizelimit = SL;
-    //std::cerr << SL << std::endl;
 }
 
 void Astar::setAlternativePoints(const Node &start, const Node &finish)
 {
-    alt_start = start;
-    alt_finish = finish;
+    this->start = start;
+    this->goal = finish;
     alt_points_set = true;
 }
 
@@ -36,14 +35,7 @@ SearchResult Astar::startSearch(ILogger *Logger, const Map &Map, const Environme
 
     auto start_time = std::chrono::system_clock::now();
 
-    Node start, goal;
-    if (alt_points_set) {
-        start.i = alt_start.i;
-        start.j = alt_start.j;
-
-        goal.i = alt_finish.i;
-        goal.j = alt_finish.j;
-    } else {
+    if (!alt_points_set) {
         start.i = Map.start_i;
         start.j = Map.start_j;
 
@@ -152,11 +144,11 @@ void Astar::updateParent(Node &node, const Map &map, const EnvironmentOptions &o
 void Astar::calculateHeuristic(Node & a, const Map &map, const EnvironmentOptions &options)
 {
     a.F = a.g;
-    int di = abs(a.i - map.goal_i),
-        dj = abs(a.j - map.goal_j);
+    int di = abs(a.i - goal.i),
+        dj = abs(a.j - goal.j);
 
     // Normalizing heuristics with linecost
-    if(options.metrictype == CN_SP_MT_EUCL) a.H = sqrt(di * di + dj * dj) * options.linecost;
+    if (options.metrictype == CN_SP_MT_EUCL) a.H = sqrt(di * di + dj * dj) * options.linecost;
     else if (options.metrictype == CN_SP_MT_MANH) a.H = (di + dj) * options.linecost;
     else if (options.metrictype == CN_SP_MT_DIAG) a.H = std::min(di, dj) * options.diagonalcost +
                                                                         abs(di - dj) * options.linecost;

@@ -10,6 +10,8 @@
 
 #include <vector>
 #include <utility>
+#include <random>
+#include <cmath>
 
 class Rstar : public ISearch
 {
@@ -29,9 +31,15 @@ protected:
     //virtual double getHopLength(const Node &a, const EnvironmentOptions &options);
 
     std::vector< std::pair<int,int> > generateSuccessors(const Node &node, const Map &map);
-    int local_search_step_limit = 100000;
+    long double generateRandomAngle();
+
+    int local_search_step_limit = 300;
     size_t number_of_successors = 10;
-    size_t distance_to_successors = 50;
+    size_t distance_to_successors = 100;
+
+    std::default_random_engine random_engine;
+    std::uniform_real_distribution<double> distribution;
+
 };
 
 #endif // RSTAR_H

@@ -24,8 +24,8 @@ protected:
     virtual double getHopLength(const Node &a, const EnvironmentOptions &options);
 
 private:
-    Node alt_start;
-    Node alt_finish;
+    Node start;
+    Node goal;
     bool alt_points_set = false;
 };
 

@@ -6,10 +6,10 @@
 #include "opencontainer.h"
 #include "list.h"
 #include <unordered_set>
-#include <random>
 #include <ctime>
 #include <cmath>
 #include <algorithm>
+#include <chrono>
 
 #include "isearch.h"
 #include "astar.h"
@@ -29,6 +29,8 @@ Rstar::Rstar(double weight, int BT, int SL)
     hweight = weight;
     breakingties = BT;
     sizelimit = SL;
+
+    distribution = std::uniform_real_distribution<double>(0, 2 * PI);
 }
 
 Rstar::~Rstar()
@@ -41,7 +43,7 @@ SearchResult Rstar::startSearch(ILogger *logger, const Map &map, const Environme
 
     OpenContainer<Node> open("g-max");
 
-    //auto start_time = std::chrono::system_clock::now();
+    auto start_time = std::chrono::system_clock::now();
 
     Node start;
     start.i = map.start_i;
@@ -59,9 +61,7 @@ SearchResult Rstar::startSearch(ILogger *logger, const Map &map, const Environme
     bool localPathFound;
 
     while(!open.empty()) {
-        //std::cerr << "$ " << open.size() << "\n";
         current_node = open.pop();
-        //if (closed.count(current_node) != 0) continue;
 
         if (current_node.AVOID && start != current_node) {
             localPathFound = findLocalPath(current_node, *current_node.parent, map, logger, options, -1).pathfound;
@@ -80,12 +80,11 @@ SearchResult Rstar::startSearch(ILogger *logger, const Map &map, const Environme
                 break;
             }
 
-            std::cerr << "Closed size: " << closed.size() + 1 << "\n";
+//          std::cerr << "Closed size: " << closed.size() + 1 << ", open size: " << open.size() << "\n";
 
             auto current_node_iterator = closed.insert(current_node).first;
 
             for (auto child_coords : generateSuccessors(current_node, map)) {
-                //std::cerr << "$$ " << open.size() << "\n";
                 child_node = Node(child_coords.first, child_coords.second);
 
                 child_node.parent = &(*current_node_iterator); // FIXME: not sure all this is a must
@@ -99,14 +98,12 @@ SearchResult Rstar::startSearch(ILogger *logger, const Map &map, const Environme
             current_node.AVOID = true;
             open.push(current_node);
         }
-        else {
-            //
-        }
-
     }
 
-    if (sresult.pathfound) {
+    auto end_time = std::chrono::system_clock::now();
+    sresult.time = (std::chrono::duration<double>(end_time - start_time)).count();
 
+    if (sresult.pathfound) {
         sresult.hppath = new NodeList();
         sresult.lppath = new NodeList();
 
@@ -128,16 +125,9 @@ SearchResult Rstar::startSearch(ILogger *logger, const Map &map, const Environme
 SearchResult Rstar::findLocalPath(const Node &node, const Node &parent_node, const Map &map,
                           ILogger *logger, const EnvironmentOptions &options, int localSearchStepLimit)
 {
-    //std::cerr << node.i << " " << node.j << " -> "
-    //          << parent_node.i << " " << parent_node.j << "... ";
     Astar localSearch(hweight, breakingties, localSearchStepLimit);
     localSearch.setAlternativePoints(parent_node, node);
     SearchResult localSearchResult = localSearch.startSearch(logger, map, options);
-
-    //----
-    //if (localSearchResult.pathfound) std::cerr << " Found path" << std::endl;
-    //else std::cerr << " nope" << std::endl;
-    //----
 
     return localSearchResult;
 }
@@ -162,10 +152,6 @@ std::vector<std::pair<int, int> > Rstar::generateSuccessors(const Node &node, co
 {
     std::vector< std::pair<int, int> > successors;
 
-    std::random_device random_device;
-    std::mt19937 generator(random_device());
-    std::uniform_real_distribution<> distribution(0, PI);
-
     long double angle;
 
     int successor_di,
@@ -184,16 +170,12 @@ std::vector<std::pair<int, int> > Rstar::generateSuccessors(const Node &node, co
     }
 
     for(size_t i = 0; i < number_of_successors; i++) {
-        angle = distribution(generator);
+        angle = generateRandomAngle();
         successor_di = ((long double) distance_to_successors) * std::cos(angle);
         successor_dj = ((long double) distance_to_successors) * std::sin(angle);
 
-        //std::cerr << angle << " " << std::cos(angle) << " " << std::sin(angle) << std::endl;
-
         successor.first = node.i + successor_di;
         successor.second = node.j + successor_dj;
-
-        //std::cerr << successors.size() << std::endl;
 
         if(!map.CellOnGrid(successor.first, successor.second)) {
             i--;
@@ -210,10 +192,11 @@ std::vector<std::pair<int, int> > Rstar::generateSuccessors(const Node &node, co
         successors.push_back(successor);
     }
 
-    //std::cerr << "For node " << node.i <<  " " << node.j << " generated:" << std::endl;
-    //for (auto a : successors) {
-    //    std::cerr << ">> " << a.first << " " << a.second << std::endl;
-    //}
-
     return successors;
+}
+
+long double Rstar::generateRandomAngle()
+{
+
+    return distribution(random_engine);
 }
