@@ -70,8 +70,6 @@ SearchResult Rstar::startSearch(ILogger *logger, const Map &map, const Environme
     bool localPathFound;
 
     while(!open.empty()) {
-        std::cout << closed.size() << " " << open.size() << "\n";
-
         current_node = open.pop();
 
         if (current_node.AVOID && start != current_node) {
@@ -102,7 +100,6 @@ SearchResult Rstar::startSearch(ILogger *logger, const Map &map, const Environme
 
                 open.push(child_node);
             }
-            std::cout << "+\n";
         }
         else if(!current_node.AVOID) {
             current_node.AVOID = true;
@@ -220,8 +217,6 @@ std::vector<std::pair<int, int> > Rstar::generateSuccessors(const Node &node, co
 
         successors.erase(successors.begin() + element_to_erase);
     }
-
-    //std::cout << successors.size() << "\n";
 
     return successors;
 }
