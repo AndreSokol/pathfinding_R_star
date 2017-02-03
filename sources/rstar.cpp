@@ -30,7 +30,7 @@ Rstar::Rstar(double weight, int BT, int SL)
     breakingties = BT;
     sizelimit = SL;
 
-    distribution = std::uniform_real_distribution<double>(0, 2 * PI);
+    distribution = std::uniform_real_distribution<double>(0, 1);
 }
 
 Rstar::~Rstar()
@@ -39,11 +39,14 @@ Rstar::~Rstar()
 }
 
 SearchResult Rstar::startSearch(ILogger *logger, const Map &map, const EnvironmentOptions &options) {
+    auto start_time = std::chrono::system_clock::now();
+
+    generateCirleOfSuccessors();
+
     std::unordered_set<Node> closed;
 
     OpenContainer<Node> open("g-max");
 
-    auto start_time = std::chrono::system_clock::now();
 
     Node start;
     start.i = map.start_i;
@@ -151,6 +154,14 @@ void Rstar::calculateHeuristic(Node & a, const Map &map, const EnvironmentOption
 std::vector<std::pair<int, int> > Rstar::generateSuccessors(const Node &node, const Map &map)
 {
     std::vector< std::pair<int, int> > successors;
+    std::vector< std::pair<int, int> > predecessors;
+
+    Node parent = node;
+
+    for (; parent.parent != nullptr; parent = *parent.parent) {
+        predecessors.push_back(std::pair<int,int>(parent.i, parent.j));
+    }
+    predecessors.push_back(std::pair<int,int>(parent.i, parent.j));
 
     long double angle;
 
@@ -169,34 +180,72 @@ std::vector<std::pair<int, int> > Rstar::generateSuccessors(const Node &node, co
         return successors;
     }
 
-    for(size_t i = 0; i < number_of_successors; i++) {
-        angle = generateRandomAngle();
-        successor_di = ((long double) distance_to_successors) * std::cos(angle);
-        successor_dj = ((long double) distance_to_successors) * std::sin(angle);
+    auto it = successors_circle.begin();
+    for(; it < successors_circle.end(); it++) {
+        successor = *it;
 
-        successor.first = node.i + successor_di;
-        successor.second = node.j + successor_dj;
+        successor.first = node.i + successor.first;
+        successor.second = node.j + successor.second;
 
         if(!map.CellOnGrid(successor.first, successor.second)) {
-            i--;
             continue;
         }
         if(map.CellIsObstacle(successor.first, successor.second)) {
-            i--;
             continue;
         }
         if (std::find(successors.begin(), successors.end(), successor) != successors.end()) {
+            continue;
+        }
+        if (std::find(predecessors.begin(), predecessors.end(), successor) != predecessors.end()) {
             continue;
         }
 
         successors.push_back(successor);
     }
 
+    int element_to_erase;
+    while(successors.size() > number_of_successors) {
+        element_to_erase = int(generateRandomValue() * successors.size());
+
+        successors.erase(successors.begin() + element_to_erase);
+    }
+
     return successors;
 }
 
-long double Rstar::generateRandomAngle()
+long double Rstar::generateRandomValue()
 {
 
     return distribution(random_engine);
+}
+
+void Rstar::generateCirleOfSuccessors()
+{
+    //std::cout << "CoS\n";
+    successors_circle.resize(0);
+    int di = distance_to_successors,
+        dj = 0;
+
+    for(; di >= 0 && di >= dj; di--) {
+        while (dj * dj + di * di <= distance_to_successors * distance_to_successors) {
+            successors_circle.push_back(std::pair<int,int>(di, dj));
+            successors_circle.push_back(std::pair<int,int>(dj, di));
+            successors_circle.push_back(std::pair<int,int>(-di, dj));
+            successors_circle.push_back(std::pair<int,int>(-dj, di));
+            successors_circle.push_back(std::pair<int,int>(di, -dj));
+            successors_circle.push_back(std::pair<int,int>(dj, -di));
+            successors_circle.push_back(std::pair<int,int>(-di, -dj));
+            successors_circle.push_back(std::pair<int,int>(-dj, -di));
+            dj++;
+        }
+    }
+
+    std::sort(successors_circle.begin(), successors_circle.end());
+    successors_circle.erase(std::unique(successors_circle.begin(), successors_circle.end()),
+                            successors_circle.end());
+
+    /*auto it = successors_circle.begin();
+    for(; it != successors_circle.end(); it++) {
+        std::cout << it->first << "," << it->second << "\n";
+    }*/
 }

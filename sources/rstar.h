@@ -31,15 +31,19 @@ protected:
     //virtual double getHopLength(const Node &a, const EnvironmentOptions &options);
 
     std::vector< std::pair<int,int> > generateSuccessors(const Node &node, const Map &map);
-    long double generateRandomAngle();
+    long double generateRandomValue();
 
-    int local_search_step_limit = 300;
+    int local_search_step_limit = 3000;
     size_t number_of_successors = 10;
-    size_t distance_to_successors = 100;
+    size_t distance_to_successors = 2;
 
     std::default_random_engine random_engine;
     std::uniform_real_distribution<double> distribution;
 
+    std::vector< std::pair<int,int> > successors_circle;
+
+private:
+    void generateCirleOfSuccessors();
 };
 
 #endif // RSTAR_H
