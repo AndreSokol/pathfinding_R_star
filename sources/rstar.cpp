@@ -24,13 +24,19 @@ Rstar::Rstar()
 
 }
 
-Rstar::Rstar(double weight, int BT, int SL)
+Rstar::Rstar(double weight, int BT, int SL, int distance_to_successors,
+             int number_of_successors, int local_search_step_limit)
 {
     hweight = weight;
     breakingties = BT;
     sizelimit = SL;
 
-    distribution = std::uniform_real_distribution<double>(0, 1);
+    this->distance_to_successors = distance_to_successors;
+    this->number_of_successors = number_of_successors;
+    this->local_search_step_limit = local_search_step_limit;
+
+    std::srand(time(NULL));
+    //distribution = std::uniform_real_distribution<double>(0, 1);
 }
 
 Rstar::~Rstar()
@@ -64,6 +70,8 @@ SearchResult Rstar::startSearch(ILogger *logger, const Map &map, const Environme
     bool localPathFound;
 
     while(!open.empty()) {
+        std::cout << closed.size() << " " << open.size() << "\n";
+
         current_node = open.pop();
 
         if (current_node.AVOID && start != current_node) {
@@ -83,11 +91,9 @@ SearchResult Rstar::startSearch(ILogger *logger, const Map &map, const Environme
                 break;
             }
 
-//          std::cerr << "Closed size: " << closed.size() + 1 << ", open size: " << open.size() << "\n";
-
             auto current_node_iterator = closed.insert(current_node).first;
 
-            for (auto child_coords : generateSuccessors(current_node, map)) {
+            for (auto child_coords : generateSuccessors(current_node, map, closed)) {
                 child_node = Node(child_coords.first, child_coords.second);
 
                 child_node.parent = &(*current_node_iterator); // FIXME: not sure all this is a must
@@ -96,6 +102,7 @@ SearchResult Rstar::startSearch(ILogger *logger, const Map &map, const Environme
 
                 open.push(child_node);
             }
+            std::cout << "+\n";
         }
         else if(!current_node.AVOID) {
             current_node.AVOID = true;
@@ -151,7 +158,8 @@ void Rstar::calculateHeuristic(Node & a, const Map &map, const EnvironmentOption
     a.F += hweight * a.H;
 }
 
-std::vector<std::pair<int, int> > Rstar::generateSuccessors(const Node &node, const Map &map)
+std::vector<std::pair<int, int> > Rstar::generateSuccessors(const Node &node, const Map &map,
+                                                            const std::unordered_set<Node> &closed)
 {
     std::vector< std::pair<int, int> > successors;
     std::vector< std::pair<int, int> > predecessors;
@@ -199,29 +207,33 @@ std::vector<std::pair<int, int> > Rstar::generateSuccessors(const Node &node, co
         if (std::find(predecessors.begin(), predecessors.end(), successor) != predecessors.end()) {
             continue;
         }
+        if (closed.count(Node(successor.first, successor.second)) != 0) {
+            continue;
+        }
 
         successors.push_back(successor);
     }
 
     int element_to_erase;
     while(successors.size() > number_of_successors) {
-        element_to_erase = int(generateRandomValue() * successors.size());
+        element_to_erase = rand() % successors.size();
 
         successors.erase(successors.begin() + element_to_erase);
     }
 
+    //std::cout << successors.size() << "\n";
+
     return successors;
 }
 
-long double Rstar::generateRandomValue()
+/*long double Rstar::generateRandomValue()
 {
 
     return distribution(random_engine);
-}
+}*/
 
 void Rstar::generateCirleOfSuccessors()
 {
-    //std::cout << "CoS\n";
     successors_circle.resize(0);
     int di = distance_to_successors,
         dj = 0;
@@ -243,9 +255,4 @@ void Rstar::generateCirleOfSuccessors()
     std::sort(successors_circle.begin(), successors_circle.end());
     successors_circle.erase(std::unique(successors_circle.begin(), successors_circle.end()),
                             successors_circle.end());
-
-    /*auto it = successors_circle.begin();
-    for(; it != successors_circle.end(); it++) {
-        std::cout << it->first << "," << it->second << "\n";
-    }*/
 }

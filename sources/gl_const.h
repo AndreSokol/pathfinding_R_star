@@ -29,6 +29,9 @@
         #define CNS_TAG_DC  "diagonalcost"
         #define CNS_TAG_AD  "allowdiagonal"
         #define CNS_TAG_RP  "useresetparent"
+        #define CNS_TAG_D2S    "distancetosuccessors"
+        #define CNS_TAG_NOFS   "numberofsuccessors"
+        #define CNS_TAG_LSSL   "localsearchsteplimit"
 
     #define CNS_TAG_OPT         "options"
         #define CNS_TAG_LOGLVL  "loglevel"
@@ -142,6 +145,9 @@
 
     #define CN_SP_RP 10 //UseResetParent
 
+    #define CN_SP_D2S   11 // "distancetosuccessors"
+    #define CN_SP_NOFS  12 // "numberofsuccessors"
+    #define CN_SP_LSSL  13 // "localsearchsteplimit"
 
 
 

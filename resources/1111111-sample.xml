@@ -45,7 +45,10 @@
         <linecost>1</linecost>
         <diagonalcost>1.41421</diagonalcost>
         <allowdiagonal>1</allowdiagonal>
-        <allowsqueeze>0</allowsqueeze>
+        <allowsqueeze>0</allowsqueeze>>
+        <distancetosuccessors>2</distancetosuccessors>
+        <numberofsuccessors>4</numberofsuccessors>
+        <localsearchsteplimit>30</localsearchsteplimit>
     </algorithm>
     <options>
         <loglevel>1</loglevel>

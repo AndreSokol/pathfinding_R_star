@@ -58,7 +58,7 @@ bool Config::getConfig(const char* FileName)
 
     if(value==CNS_SP_ST_ASTAR || value==CNS_SP_ST_JP_SEARCH || value==CNS_SP_ST_TH || value == CNS_SP_ST_RSTAR)
     {
-        N = 11;
+        N = 15;
         SearchParams = new double [N];
         SearchParams[CN_SP_ST] = CN_SP_ST_ASTAR;
         if(value==CNS_SP_ST_JP_SEARCH)
@@ -248,6 +248,73 @@ bool Config::getConfig(const char* FileName)
             SearchParams[CN_SP_RP] = CN_SP_AS_TRUE;
         }
     }
+
+    // Distance to successors
+    element = algorithm -> FirstChildElement(CNS_TAG_D2S);
+    if (!element) {
+        std::cout << "Warning! No '"<< CNS_TAG_D2S <<"' tag found in algorithm section." << std::endl;
+        std::cout << "Value of '"<< CNS_TAG_D2S <<"' was defined to 1." << std::endl;
+        SearchParams[CN_SP_D2S] = 1;
+    }
+    else
+    {
+        stream << element->GetText();
+        stream >> SearchParams[CN_SP_D2S];
+        stream.str("");
+        stream.clear();
+
+        if (SearchParams[CN_SP_D2S] != double(int(SearchParams[CN_SP_D2S])))
+        {
+            std::cout << "Warning! Value of '" << CNS_TAG_D2S <<"' tag is not correctly specified. Should be integer." << std::endl;
+            std::cout << "Value of '"<< CNS_TAG_D2S <<"' was defined to 1." << std::endl;
+            SearchParams[CN_SP_D2S] = 1;
+        }
+    }
+
+    // Number of successors
+    element = algorithm -> FirstChildElement(CNS_TAG_NOFS);
+    if (!element) {
+        std::cout << "Warning! No '"<< CNS_TAG_NOFS <<"' tag found in algorithm section." << std::endl;
+        std::cout << "Value of '"<< CNS_TAG_NOFS <<"' was defined to 4." << std::endl;
+        SearchParams[CN_SP_NOFS] = 4;
+    }
+    else
+    {
+        stream << element->GetText();
+        stream >> SearchParams[CN_SP_NOFS];
+        stream.str("");
+        stream.clear();
+
+        if (SearchParams[CN_SP_NOFS] != double(int(SearchParams[CN_SP_NOFS])))
+        {
+            std::cout << "Warning! Value of '" << CNS_TAG_NOFS <<"' tag is not correctly specified. Should be integer." << std::endl;
+            std::cout << "Value of '"<< CNS_TAG_NOFS <<"' was defined to 4." << std::endl;
+            SearchParams[CN_SP_D2S] = 4;
+        }
+    }
+
+    // Local search step limit
+    element = algorithm -> FirstChildElement(CNS_TAG_LSSL);
+    if (!element) {
+        std::cout << "Warning! No '"<< CNS_TAG_LSSL <<"' tag found in algorithm section." << std::endl;
+        std::cout << "Value of '"<< CNS_TAG_LSSL <<"' was defined to -1." << std::endl;
+        SearchParams[CN_SP_LSSL] = -1;
+    }
+    else
+    {
+        stream << element->GetText();
+        stream >> SearchParams[CN_SP_LSSL];
+        stream.str("");
+        stream.clear();
+
+        if (SearchParams[CN_SP_LSSL] != double(int(SearchParams[CN_SP_LSSL])))
+        {
+            std::cout << "Warning! Value of '" << CNS_TAG_LSSL <<"' tag is not correctly specified. Should be integer." << std::endl;
+            std::cout << "Value of '"<< CNS_TAG_LSSL <<"' was defined to -1." << std::endl;
+            SearchParams[CN_SP_LSSL] = -1;
+        }
+    }
+
     SearchParams[CN_SP_DC]=SearchParams[CN_SP_LC]*sqrt(2);
 
     element = algorithm -> FirstChildElement(CNS_TAG_AD);

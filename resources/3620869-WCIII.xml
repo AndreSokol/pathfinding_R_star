@@ -525,7 +525,7 @@
         </grid>
     </map>
     <algorithm>
-        <searchtype>astar</searchtype>
+        <searchtype>rstar</searchtype>
         <metrictype>euclid</metrictype>
         <hweight>1</hweight>
         <breakingties>g-max</breakingties>
@@ -533,6 +533,9 @@
         <diagonalcost>1.41421356237</diagonalcost>
         <allowdiagonal>1</allowdiagonal>
         <allowsqueeze>0</allowsqueeze>
+        <distancetosuccessors>50</distancetosuccessors>
+        <numberofsuccessors>1</numberofsuccessors>
+        <localsearchsteplimit>30</localsearchsteplimit>
     </algorithm>
     <options>
         <loglevel>1</loglevel>
