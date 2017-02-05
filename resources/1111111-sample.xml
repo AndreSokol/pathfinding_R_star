@@ -46,8 +46,8 @@
         <diagonalcost>1.41421</diagonalcost>
         <allowdiagonal>1</allowdiagonal>
         <allowsqueeze>0</allowsqueeze>>
-        <distancetosuccessors>2</distancetosuccessors>
-        <numberofsuccessors>4</numberofsuccessors>
+        <distancetosuccessors>5</distancetosuccessors>
+        <numberofsuccessors>5</numberofsuccessors>
         <localsearchsteplimit>30</localsearchsteplimit>
     </algorithm>
     <options>

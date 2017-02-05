@@ -12,7 +12,7 @@
 #include <chrono>
 
 #include "isearch.h"
-#include "astar.h"
+#include "jpsearch.h"
 #include "searchresult.h"
 
 
@@ -52,7 +52,6 @@ SearchResult RJPSearch::startSearch(ILogger *logger, const Map &map, const Envir
 
     OpenContainer<Node> open("g-max");
 
-
     Node start;
     start.i = map.start_i;
     start.j = map.start_j;
@@ -66,22 +65,22 @@ SearchResult RJPSearch::startSearch(ILogger *logger, const Map &map, const Envir
 
     Node current_node, child_node;
 
-    bool localPathFound;
+    SearchResult localSearchResult;
 
     while(!open.empty()) {
         current_node = open.pop();
 
         if (current_node.AVOID && start != current_node) {
-            localPathFound = findLocalPath(current_node, *current_node.parent, map, logger, options, -1).pathfound;
+            localSearchResult = findLocalPath(current_node, *current_node.parent, map, logger, options, -1);
             // no step limit if already marked AVOID
         }
         else if (start != current_node) {
-            localPathFound = findLocalPath(current_node, *current_node.parent, map,
-                                           logger, options, local_search_step_limit).pathfound;
+            localSearchResult = findLocalPath(current_node, *current_node.parent, map,
+                                           logger, options, local_search_step_limit);
         }
 
 
-        if(localPathFound || start == current_node) {
+        if(localSearchResult.pathfound || start == current_node) {
 
             if (current_node == goal) {
                 sresult.pathfound = true;
@@ -94,6 +93,8 @@ SearchResult RJPSearch::startSearch(ILogger *logger, const Map &map, const Envir
                 child_node = Node(child_coords.first, child_coords.second);
 
                 child_node.parent = &(*current_node_iterator); // FIXME: not sure all this is a must
+
+                child_node.g = current_node.g + localSearchResult.pathlength;
 
                 calculateHeuristic(child_node, map, options);
 
@@ -131,9 +132,33 @@ SearchResult RJPSearch::startSearch(ILogger *logger, const Map &map, const Envir
 SearchResult RJPSearch::findLocalPath(const Node &node, const Node &parent_node, const Map &map,
                           ILogger *logger, const EnvironmentOptions &options, int localSearchStepLimit)
 {
-    Astar localSearch(hweight, breakingties, localSearchStepLimit);
+    SearchResult localSearchResult;
+    if (!node.AVOID) {
+        if (lineOfSight(node, parent_node, map)) {
+            localSearchResult.pathfound = true;
+            localSearchResult.nodescreated = 0;
+            localSearchResult.numberofsteps = 1;
+            localSearchResult.pathlength = sqrt((node.i - parent_node.i) * (node.i - parent_node.i) +
+                                                (node.j - parent_node.j) * (node.j - parent_node.j));
+
+            localSearchResult.hppath = new NodeList;
+            localSearchResult.lppath = new NodeList;
+            localSearchResult.hppath->push_front(node);
+            localSearchResult.hppath->push_front(parent_node);
+            localSearchResult.lppath->push_front(node);
+            localSearchResult.lppath->push_front(parent_node);
+        }
+        else {
+            localSearchResult.pathfound = false;
+            localSearchResult.nodescreated = 0;
+            localSearchResult.numberofsteps = 1;
+        }
+        return localSearchResult;
+    }
+
+    JPSearch localSearch(hweight, breakingties, localSearchStepLimit);
     localSearch.setAlternativePoints(parent_node, node);
-    SearchResult localSearchResult = localSearch.startSearch(logger, map, options);
+    localSearchResult = localSearch.startSearch(logger, map, options);
 
     return localSearchResult;
 }
@@ -220,11 +245,6 @@ std::vector<std::pair<int, int> > RJPSearch::generateSuccessors(const Node &node
     return successors;
 }
 
-/*long double RJPSearch::generateRandomValue()
-{
-
-    return distribution(random_engine);
-}*/
 
 void RJPSearch::generateCirleOfSuccessors()
 {
@@ -251,3 +271,54 @@ void RJPSearch::generateCirleOfSuccessors()
                             successors_circle.end());
 }
 
+
+bool RJPSearch::lineOfSight(const Node &p, const Node &q, const Map &map)
+{
+    int x_1 = p.i,
+        y_1 = p.j,
+        x_2 = q.i,
+        y_2 = q.j;
+
+    if (x_2 < x_1) {
+        // to ensure x grows from x_1 to x_2
+        int temp = x_1;
+        x_1 = x_2;
+        x_2 = temp;
+
+        temp = y_1;
+        y_1 = y_2;
+        y_2 = temp;
+    }
+
+    int dx = x_2 - x_1,
+        dy = y_2 - y_1;
+
+    // a * x + b * y + c = 0, equotation of the line through (x1, y1) and (x2, y2)
+    // multiplying by 2 to check grid intersection points easily (add 1 instead of 0.5 to each of coordinates, ints only)
+    int a = 2 * dy,
+        b = - 2 * dx,
+        c = 0 - a * x_1 - b * y_1;
+
+    int growth_y;
+    if (dy > 0) growth_y = 1;
+    else        growth_y = -1;
+
+    int current_x = x_1,
+        current_y = y_1;
+
+    while (current_x != x_2 || current_y != y_2) {
+        if (map.CellIsObstacle(current_x, current_y)) return false;
+
+        // let's check if the line (a, b, c) will cross the Ox-parallel line of grid in this cell
+        if (a * current_x + a / 2 + b * current_y + b * growth_y / 2 + c == 0) {
+            // this happens when we're on the intersection, just skip forward, we can squeeze around corner
+            current_x += 1;
+            current_y += growth_y;
+        }
+        else if (growth_y * (a * current_x + a / 2 + b * current_y + b * growth_y / 2 + c) < 0)
+                        current_x += 1; // not crossing at current x, move horizontally
+        else            current_y += growth_y; // crossing, move vertically
+    }
+
+    return true;
+}

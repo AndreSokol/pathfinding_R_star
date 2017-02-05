@@ -534,7 +534,7 @@
         <allowdiagonal>1</allowdiagonal>
         <allowsqueeze>0</allowsqueeze>
         <distancetosuccessors>50</distancetosuccessors>
-        <numberofsuccessors>1</numberofsuccessors>
+        <numberofsuccessors>10</numberofsuccessors>
         <localsearchsteplimit>30</localsearchsteplimit>
     </algorithm>
     <options>

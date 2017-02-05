@@ -11,6 +11,8 @@
 
 class RJPSearch : public ISearch
 {
+public:
+    RJPSearch();
     RJPSearch(double weight, int BT, int SL, int distance_to_successors,
           int number_of_successors, int local_search_step_limit);
     ~RJPSearch();
@@ -23,6 +25,7 @@ private:
     std::vector< std::pair<int,int> > generateSuccessors(const Node &node, const Map &map,
                                                          const std::unordered_set<Node> &closed);
     void generateCirleOfSuccessors();
+    bool lineOfSight(const Node &p, const Node &q, const Map &map);
 
     std::vector< std::pair<int,int> > successors_circle;
     int local_search_step_limit = 3000;

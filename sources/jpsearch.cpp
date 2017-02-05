@@ -14,6 +14,14 @@ JPSearch::JPSearch(double w, int BT, int SL)
     sizelimit = SL;
 }
 
+void JPSearch::setAlternativePoints(const Node &start, const Node &finish)
+{
+    this->start = start;
+    this->goal = finish;
+    alt_points_set = true;
+}
+
+
 SearchResult JPSearch::startSearch(ILogger *Logger, const Map &Map, const EnvironmentOptions &options)
 {
     std::set<Node> closed;
@@ -22,14 +30,14 @@ SearchResult JPSearch::startSearch(ILogger *Logger, const Map &Map, const Enviro
 
     auto start_time = std::chrono::system_clock::now();
 
-    Node start;
-    start.i = Map.start_i;
-    start.j = Map.start_j;
-    start.g = 0;
+    if (!alt_points_set) {
+        start.i = Map.start_i;
+        start.j = Map.start_j;
 
-    Node goal;
-    goal.i = Map.goal_i;
-    goal.j = Map.goal_j;
+        goal.i = Map.goal_i;
+        goal.j = Map.goal_j;
+    }
+    start.g = 0;
 
     open.push(start);
 

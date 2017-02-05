@@ -67,22 +67,22 @@ SearchResult Rstar::startSearch(ILogger *logger, const Map &map, const Environme
 
     Node current_node, child_node;
 
-    bool localPathFound;
+    SearchResult localSearchResult;
 
     while(!open.empty()) {
         current_node = open.pop();
 
         if (current_node.AVOID && start != current_node) {
-            localPathFound = findLocalPath(current_node, *current_node.parent, map, logger, options, -1).pathfound;
+            localSearchResult = findLocalPath(current_node, *current_node.parent, map, logger, options, -1);
             // no step limit if already marked AVOID
         }
         else if (start != current_node) {
-            localPathFound = findLocalPath(current_node, *current_node.parent, map,
-                                           logger, options, local_search_step_limit).pathfound;
+            localSearchResult = findLocalPath(current_node, *current_node.parent, map,
+                                           logger, options, local_search_step_limit);
         }
 
 
-        if(localPathFound || start == current_node) {
+        if(localSearchResult.pathfound || start == current_node) {
 
             if (current_node == goal) {
                 sresult.pathfound = true;
@@ -96,6 +96,8 @@ SearchResult Rstar::startSearch(ILogger *logger, const Map &map, const Environme
 
                 child_node.parent = &(*current_node_iterator); // FIXME: not sure all this is a must
 
+                child_node.g = current_node.g + localSearchResult.pathlength;
+
                 calculateHeuristic(child_node, map, options);
 
                 open.push(child_node);
@@ -103,6 +105,7 @@ SearchResult Rstar::startSearch(ILogger *logger, const Map &map, const Environme
         }
         else if(!current_node.AVOID) {
             current_node.AVOID = true;
+            // FIXME: recount heuristics
             open.push(current_node);
         }
     }
