@@ -30,7 +30,8 @@ SOURCES += \
     environmentoptions.cpp \
     jpsearch.cpp \
     thetastar.cpp \
-    rstar.cpp
+    rstar.cpp \
+    rjpsearch.cpp
 
 HEADERS += \
     tinyxml.h \
@@ -50,4 +51,5 @@ HEADERS += \
     jpsearch.h \
     opencontainer.h \
     thetastar.h \
-    rstar.h
+    rstar.h \
+    rjpsearch.h
