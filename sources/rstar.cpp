@@ -83,6 +83,10 @@ SearchResult Rstar::startSearch(ILogger *logger, const Map &map, const Environme
 
 
         if(localSearchResult.pathfound || start == current_node) {
+            if (current_node != start) {
+                // Update g from current node with found path
+                current_node.g = current_node.parent->g + localSearchResult.pathlength;
+            }
 
             if (current_node == goal) {
                 sresult.pathfound = true;
@@ -96,7 +100,10 @@ SearchResult Rstar::startSearch(ILogger *logger, const Map &map, const Environme
 
                 child_node.parent = &(*current_node_iterator); // FIXME: not sure all this is a must
 
-                child_node.g = current_node.g + localSearchResult.pathlength;
+                // First we put this in g - path length to parent
+                // plus distance_to_successors value, as we won't get
+                // there faster
+                child_node.g = current_node.g + distance_to_successors;
 
                 calculateHeuristic(child_node, map, options);
 
@@ -105,7 +112,8 @@ SearchResult Rstar::startSearch(ILogger *logger, const Map &map, const Environme
         }
         else if(!current_node.AVOID) {
             current_node.AVOID = true;
-            // FIXME: recount heuristics
+            // Recount heuristics
+            current_node.F += local_search_step_limit;
             open.push(current_node);
         }
     }
@@ -220,6 +228,9 @@ std::vector<std::pair<int, int> > Rstar::generateSuccessors(const Node &node, co
 
         successors.erase(successors.begin() + element_to_erase);
     }
+
+//    std::cerr << node.i << "," << node.j << "\n";
+//    for (auto s : successors) std::cerr << s.first << "," << s.second << "\n";
 
     return successors;
 }
