@@ -90,6 +90,7 @@
         #define CNS_SP_ST_ASTAR     "astar"
         #define CNS_SP_ST_TH        "theta"
         #define CNS_SP_ST_RSTAR     "rstar"
+        #define CNS_SP_ST_RJPS      "rjps"
 
         #define CN_SP_ST_BFS        0
         #define CN_SP_ST_DIJK       1
@@ -97,6 +98,7 @@
         #define CN_SP_ST_JP_SEARCH  3
         #define CN_SP_ST_TH         4
         #define CN_SP_ST_RSTAR      5
+        #define CN_SP_ST_RJPS       6
 
 
     #define CN_SP_LL 1

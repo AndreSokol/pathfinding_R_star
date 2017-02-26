@@ -63,6 +63,10 @@ void Mission::createSearch()
     else if (config.SearchParams[CN_SP_ST] == CN_SP_ST_TH)
         search = new ThetaStar(config.SearchParams[CN_SP_HW], config.SearchParams[CN_SP_BT], config.SearchParams[CN_SP_SL]);
     else if (config.SearchParams[CN_SP_ST] == CN_SP_ST_RSTAR)
+        search = new Rstar(config.SearchParams[CN_SP_HW], config.SearchParams[CN_SP_BT],
+                               config.SearchParams[CN_SP_SL], config.SearchParams[CN_SP_D2S],
+                               config.SearchParams[CN_SP_NOFS], config.SearchParams[CN_SP_LSSL]);
+    else if (config.SearchParams[CN_SP_ST] == CN_SP_ST_RJPS)
         search = new RJPSearch(config.SearchParams[CN_SP_HW], config.SearchParams[CN_SP_BT],
                                config.SearchParams[CN_SP_SL], config.SearchParams[CN_SP_D2S],
                                config.SearchParams[CN_SP_NOFS], config.SearchParams[CN_SP_LSSL]);
@@ -126,6 +130,13 @@ const char* Mission::getAlgorithmName ()
     else if (config.SearchParams[CN_SP_ST] == CN_SP_ST_TH)
     {
         return CNS_SP_ST_TH;
+    }
+    else if (config.SearchParams[CN_SP_ST] == CN_SP_ST_RSTAR)
+    {
+        return CNS_SP_ST_RSTAR;
+    }
+    else if (config.SearchParams[CN_SP_ST] == CN_SP_ST_RJPS) {
+        return CNS_SP_ST_RJPS;
     }
     else
     {
