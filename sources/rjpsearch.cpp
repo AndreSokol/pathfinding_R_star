@@ -81,6 +81,10 @@ SearchResult RJPSearch::startSearch(ILogger *logger, const Map &map, const Envir
 
 
         if(localSearchResult.pathfound || start == current_node) {
+            if (current_node != start) {
+                // Update g from current node with found path
+                current_node.g = current_node.parent->g + localSearchResult.pathlength;
+            }
 
             if (current_node == goal) {
                 sresult.pathfound = true;
@@ -94,7 +98,10 @@ SearchResult RJPSearch::startSearch(ILogger *logger, const Map &map, const Envir
 
                 child_node.parent = &(*current_node_iterator); // FIXME: not sure all this is a must
 
-                child_node.g = current_node.g + localSearchResult.pathlength;
+                // First we put this in g - path length to parent
+                // plus distance_to_successors value, as we won't get
+                // there faster
+                child_node.g = current_node.g + distance_to_successors;
 
                 calculateHeuristic(child_node, map, options);
 
@@ -103,6 +110,8 @@ SearchResult RJPSearch::startSearch(ILogger *logger, const Map &map, const Envir
         }
         else if(!current_node.AVOID) {
             current_node.AVOID = true;
+            // Recount heuristics
+            current_node.F += local_search_step_limit;
             open.push(current_node);
         }
     }

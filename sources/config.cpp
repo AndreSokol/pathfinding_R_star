@@ -56,7 +56,8 @@ bool Config::getConfig(const char* FileName)
         value = element -> GetText();
     std::transform(value.begin(), value.end(), value.begin(), ::tolower);
 
-    if(value==CNS_SP_ST_ASTAR || value==CNS_SP_ST_JP_SEARCH || value==CNS_SP_ST_TH || value == CNS_SP_ST_RSTAR)
+    if(value==CNS_SP_ST_ASTAR || value==CNS_SP_ST_JP_SEARCH || value==CNS_SP_ST_TH ||
+            value == CNS_SP_ST_RSTAR || value == CNS_SP_ST_RJPS)
     {
         N = 15;
         SearchParams = new double [N];
@@ -167,7 +168,10 @@ bool Config::getConfig(const char* FileName)
     else
     {
         std::cout << "Error! Value of '"<< CNS_TAG_ST <<"' tag (algorithm name) is not correctly specified." << std::endl;
-        std::cout << "Supported algorithm's names are: '"<< CNS_SP_ST_BFS << "', '" << CNS_SP_ST_DIJK << "', '" << CNS_SP_ST_ASTAR << "', '" << CNS_SP_ST_JP_SEARCH << "'."  << std::endl;
+        std::cout << "Supported algorithm's names are: '"<< CNS_SP_ST_BFS << "', '" << CNS_SP_ST_DIJK <<
+                     "', '" << CNS_SP_ST_ASTAR << "', '" << CNS_SP_ST_JP_SEARCH <<
+                     "', '" << CNS_SP_ST_TH << "', '" << CNS_SP_ST_RSTAR << "' or '" <<
+                     CNS_SP_ST_RJPS << "'."  << std::endl;
         return false;
     }
 
