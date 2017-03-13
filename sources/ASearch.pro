@@ -14,6 +14,9 @@ win32 {
 QMAKE_LFLAGS += -static -static-libgcc -static-libstdc++
 }
 
+QMAKE_CXXFLAGS_DEBUG *= -pg
+QMAKE_LFLAGS_DEBUG *= -pg
+
 SOURCES += \
     tinyxmlparser.cpp \
     tinyxmlerror.cpp \

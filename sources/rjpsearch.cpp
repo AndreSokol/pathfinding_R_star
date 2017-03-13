@@ -66,6 +66,8 @@ SearchResult RJPSearch::startSearch(ILogger *logger, const Map &map, const Envir
     Node current_node, child_node;
 
     SearchResult localSearchResult;
+    sresult.nodescreated = 0;
+    sresult.numberofsteps = 0;
 
     while(!open.empty()) {
         current_node = open.pop();
@@ -84,6 +86,8 @@ SearchResult RJPSearch::startSearch(ILogger *logger, const Map &map, const Envir
             if (current_node != start) {
                 // Update g from current node with found path
                 current_node.g = current_node.parent->g + localSearchResult.pathlength;
+                sresult.numberofsteps += localSearchResult.numberofsteps;
+                sresult.nodescreated = std::max(sresult.nodescreated, localSearchResult.nodescreated);
             }
 
             if (current_node == goal) {
@@ -114,6 +118,7 @@ SearchResult RJPSearch::startSearch(ILogger *logger, const Map &map, const Envir
             current_node.F += local_search_step_limit;
             open.push(current_node);
         }
+        sresult.numberofsteps += 1;
     }
 
     auto end_time = std::chrono::system_clock::now();
@@ -130,8 +135,12 @@ SearchResult RJPSearch::startSearch(ILogger *logger, const Map &map, const Envir
             sresult.JoinLpPaths( localSearchResult );
             sresult.hppath->push_front(current_node);
             current_node = *current_node.parent;
+
+            sresult.numberofsteps += localSearchResult.numberofsteps;
+            sresult.nodescreated = std::max(sresult.nodescreated, localSearchResult.nodescreated);
         }
 
+        sresult.nodescreated += open.size() + closed.size();
         sresult.hppath->push_front(current_node); // add start node
     }
 
