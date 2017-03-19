@@ -525,22 +525,22 @@
         </grid>
     </map>
     <algorithm>
-        <searchtype>rjps</searchtype>
-        <metrictype>manhattan</metrictype>
-        <hweight>1</hweight>
-        <breakingties>g-max</breakingties>
-        <linecost>1</linecost>
-        <diagonalcost>1.41421356237</diagonalcost>
-        <allowdiagonal>1</allowdiagonal>
-        <allowsqueeze>0</allowsqueeze>
 
-
-<distancetosuccessors>20</distancetosuccessors>
-<numberofsuccessors>37</numberofsuccessors>
-<localsearchsteplimit>100</localsearchsteplimit>
+            <searchtype>rstar</searchtype>
+            <metrictype>euclid</metrictype>
+            <hweight>2</hweight>
+            <breakingties>g-max</breakingties>
+            <linecost>1</linecost>
+            <diagonalcost>1.41421356237</diagonalcost>
+            <allowdiagonal>1</allowdiagonal>
+            <allowsqueeze>0</allowsqueeze>
+            <localsearchsteplimit>100</localsearchsteplimit>
+            <distancetosuccessors>100</distancetosuccessors>
+            <numberofsuccessors>300</numberofsuccessors>
+            
     </algorithm>
     <options>
-        <loglevel>1</loglevel>
+        <loglevel>0</loglevel>
         <logpath />
         <logfilename />
     </options>

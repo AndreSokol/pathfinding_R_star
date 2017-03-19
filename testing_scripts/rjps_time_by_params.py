@@ -1,58 +1,131 @@
 import subprocess, csv
 
-TEMPLATE_ENDING = """<localsearchsteplimit>100</localsearchsteplimit>
-    </algorithm>
-    <options>
-        <loglevel>1</loglevel>
-        <logpath />
-        <logfilename />
-    </options>
-</root>
+import sys
+
+import plotly
+import plotly.graph_objs as go
+
+import pandas as pd
+
+TEMPLATE_ENDING = """
 """
 
-DIST_TO_SUCC_VALUE_RANGE = [1, 2, 3, 4, 5, 7, 10, 15, 20, 25, 30, 40, 50]
-NUMBER_OF_SUCC_VALUE_RANGE = list(range(1, 101))
-
+DIST_TO_SUCC_VALUE_RANGE = list(range(20, 101, 5))
+NUMBER_OF_SUCC_VALUE_RANGE = list(range(10, 301, 10))
 
 def main():
     template_strings = open("template.xml").read()
-    stats_file = open("stats.csv", "w", encoding="utf-8")
+    global_test_params = open("global_test_params.txt").read().split()
+
+    repeat_times = int(global_test_params[3])
+
+    stats_file = open("stats.csv", "w", newline="", encoding="utf-8")
     stats = csv.writer(stats_file, delimiter=",")
 
-    stats.writerow(["_"] + DIST_TO_SUCC_VALUE_RANGE)
+    stats.writerow([""] + DIST_TO_SUCC_VALUE_RANGE)
     for p2 in NUMBER_OF_SUCC_VALUE_RANGE:
         new_stats_row = [str(p2)]
         for p1 in DIST_TO_SUCC_VALUE_RANGE:
+
+            input_text = template_strings.replace("# PASTE PARAMS #", """
+            <searchtype>""" + global_test_params[0] + """</searchtype>
+            <metrictype>""" + global_test_params[1] + """</metrictype>
+            <hweight>""" + global_test_params[2] + """</hweight>
+            <breakingties>g-max</breakingties>
+            <linecost>1</linecost>
+            <diagonalcost>1.41421356237</diagonalcost>
+            <allowdiagonal>1</allowdiagonal>
+            <allowsqueeze>0</allowsqueeze>
+            <localsearchsteplimit>100</localsearchsteplimit>
+            <distancetosuccessors>""" + str(p1) + """</distancetosuccessors>
+            <numberofsuccessors>""" + str(p2) + """</numberofsuccessors>
+            """)
+
             input_file = open("input.xml", "w")
-
-            print(template_strings, file=input_file)
-
-            print("<distancetosuccessors>", p1, "</distancetosuccessors>", sep="", file=input_file)
-            print("<numberofsuccessors>", p2, "</numberofsuccessors>", sep="", file=input_file)
-
-            print(TEMPLATE_ENDING, file=input_file)
+            print(input_text, file=input_file)
             input_file.close()
 
             print("Generated test for:\ndistance to successors", p1, "\nnumber of successors", p2)
 
-            
-            p = subprocess.Popen(["../debug/debug/asearch.exe", "../testing_scripts/input.xml"],stdout=subprocess.PIPE,stdin=subprocess.PIPE)
-            #p.stdin.write(inpstr.encode())
-            out = p.communicate()
-            p.stdin.close()
+            avg_time = 0
+            for i in range(repeat_times):
+                print(i+1, "of", repeat_times)
 
-            out = out[0].decode().split("\r\n")
-            for s in out:
-                if s[:5] == "time=":
-                    print(s)
-                    new_stats_row += [s[5:]]
-                    break
+                p = subprocess.Popen(["../release/release/asearch.exe", "../testing_scripts/input.xml"],stdout=subprocess.PIPE,stdin=subprocess.PIPE)
+                out = p.communicate()
+                p.stdin.close()
+
+                out = out[0].decode().split("\r\n")
+                for s in out:
+                    if s[:5] == "time=":
+                        print(s)
+                        avg_time += float(s[5:])
+                        break
+                #print()
+            avg_time = avg_time / repeat_times
+            print("result", avg_time)
             print()
-        stats.writerow(new_stats_row)
+            new_stats_row += [avg_time]
 
+        stats.writerow(new_stats_row)
     stats_file.close()
     return
 
 
+def plot():
+    z_data = pd.read_csv('stats.csv', index_col=0)
+    test_stats = open("global_test_params.txt").read().split()
+
+    data = [
+        go.Surface(
+            z=z_data.as_matrix(),#z_data2
+            x=z_data.columns,
+            y=z_data.index,
+        )
+    ]
+    layout = go.Layout(
+        title='R* heatmap, metrics=' + test_stats[1] + ', hweight=' + test_stats[2] + ', average of ' + test_stats[3],
+        xaxis= dict(
+            title= 'Distance to successors',
+            ticklen= 5,
+            dtick=1,
+            ticks='outside',
+        ),
+        yaxis=dict(
+            title= 'Number of successors',
+            ticklen= 5,
+            dtick=1,
+            ticks='outside',
+        ),
+        scene=dict(
+            xaxis= dict(
+                title= 'Distance to successors',
+            ),
+            yaxis=dict(
+                title= 'Number of successors',
+            ),
+            zaxis=dict(
+                title= 'Time',
+            ),
+        ),
+        autosize=True,
+        #width=600,
+        #height=600,
+
+        #margin=dict(
+        #    l=65,
+        #    r=50,
+        #    b=65,
+        #    t=90
+        #    )
+        )
+    fig = go.Figure(data=data, layout=layout)
+    plotly.offline.plot(fig, filename='elevations-3d-surface')
+    return
+
+
 if __name__ == '__main__':
-    main()
+    if len(sys.argv) == 1:
+        main()
+    elif sys.argv[1] == '-plot':
+        plot()
