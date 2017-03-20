@@ -67,4 +67,6 @@ python test_utility.py resources/3750804-BG_log.xml 3
 
 _"3" means each cell will by 3 pixels by 3 pixels in resulting image_
 
-Result of visualizing saves in `{project_root}/test_image.bmp`. This is what we get in our case
+Result of visualizing saves in `{project_root}/test_image.bmp`. This is what we get in our case:
+
+![](./test_image_for_3750804-BG_log.bmp)
