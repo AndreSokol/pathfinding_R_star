@@ -10,7 +10,7 @@ import pandas as pd
 TEMPLATE_ENDING = """
 """
 
-DIST_TO_SUCC_VALUE_RANGE = list(range(20, 101, 5))
+DIST_TO_SUCC_VALUE_RANGE = list(range(5, 151, 5))
 NUMBER_OF_SUCC_VALUE_RANGE = list(range(10, 301, 10))
 
 def main():
@@ -77,25 +77,28 @@ def plot():
     test_stats = open("global_test_params.txt").read().split()
 
     data = [
-        go.Surface(
+        go.Heatmap(
             z=z_data.as_matrix(),#z_data2
             x=z_data.columns,
             y=z_data.index,
+            colorscale=[[0, 'rgb(230,230,230)'], [1, 'rgb(20,20,20)']],
+            zmax=0.1,
+            zmin=0,
         )
     ]
     layout = go.Layout(
         title='R* heatmap, metrics=' + test_stats[1] + ', hweight=' + test_stats[2] + ', average of ' + test_stats[3],
         xaxis= dict(
             title= 'Distance to successors',
-            ticklen= 5,
-            dtick=1,
-            ticks='outside',
+            #ticklen= 5,
+            #dtick=1,
+            #ticks='outside',
         ),
         yaxis=dict(
             title= 'Number of successors',
-            ticklen= 5,
-            dtick=1,
-            ticks='outside',
+            #ticklen= 5,
+            #dtick=1,
+            #ticks='outside',
         ),
         scene=dict(
             xaxis= dict(
