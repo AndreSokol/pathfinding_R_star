@@ -130,6 +130,7 @@ def plot():
 
 def fit():
     z_data = pd.read_csv('stats.csv', index_col=0)
+    test_stats = open("global_test_params.txt").read().split()
 
     z_data_old = deepcopy(z_data)
 
@@ -139,9 +140,9 @@ def fit():
     print(*y)
 
     for i in range(len(x)):
-        args = np.polyfit(z_data[x[i]].keys(), z_data[x[i]], 3)
+        args = np.polyfit(z_data[x[i]].keys(), z_data[x[i]], 2)
         for y_1 in y:
-            z_data[x[i]][y_1] = args[0] * (y_1 ** 3) + args[1] * (y_1 ** 2) + args[2] * y_1 + args[3]
+            z_data[x[i]][y_1] = args[0] * (y_1 ** 2) + args[1] * (y_1 ** 1) + args[2]# * y_1 + args[3]
 
     z_data = z_data.transpose()
 
@@ -151,9 +152,9 @@ def fit():
     print(*y)
 
     for i in range(len(x)):
-        args = np.polyfit(list(map(float, z_data[x[i]].keys())), list(z_data[x[i]]), 3)
+        args = np.polyfit(list(map(float, z_data[x[i]].keys())), list(z_data[x[i]]), 2)
         for y_1 in y:
-            z_data[x[i]][y_1] = args[0] * (int(y_1) ** 3) + args[1] * (int(y_1) ** 2) + args[2] * int(y_1) + args[3]
+            z_data[x[i]][y_1] = args[0] * (int(y_1) ** 2) + args[1] * (int(y_1) ** 1) + args[2]# * int(y_1) + args[3]
 
     z_data = z_data.transpose()
 
@@ -175,12 +176,12 @@ def fit():
             colorscale=[[0, 'rgb(230,230,230)'], [1, 'rgb(20,20,20)']],
             zmax=1,
             zmin=0,
-            opacity=1
+            opacity=0.9999,
         ),
     ]
 
     layout = go.Layout(
-    title="Test",#'R* heatmap, metrics=' + test_stats[1] + ', hweight=' + test_stats[2] + ', average of ' + test_stats[3],
+    title='R* heatmap, fitted, metrics=' + test_stats[1] + ', hweight=' + test_stats[2] + ', average of ' + test_stats[3],
     xaxis= dict(
     title= 'Distance to successors',
     #ticklen= 5,
@@ -202,6 +203,7 @@ def fit():
     ),
     zaxis=dict(
     title= 'Time',
+    range=[0, 0.5]
     ),
     ),
     autosize=True,
