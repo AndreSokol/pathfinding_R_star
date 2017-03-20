@@ -81,21 +81,25 @@ Sample of input XML-file (`resources/1111111-sample.xml` with comments):
     <!-- Map description -->
     <desc>Sample map</desc>
     <map>
+
         <!-- Width and height of map in cells -->
         <!-- Must match real size             -->
         <width>10</width>
         <height>10</height>
+
         <!-- Size of cell, i.e. 100m x 100m surface  -->
         <!-- represented as 10 cells x 10 cells map, -->
         <!-- to get path length in meters right put  -->
         <!-- cellsize=10                             -->
         <cellsize>24</cellsize>
+
         <!-- Start and finish coordinates            -->
         <startx>8</startx>
         <starty>1</starty>
         <finishx>1</finishx>
         <finishy>8</finishy>
         <grid>
+
             <!-- Map cells, 0 for empty cell, 1 for -->
             <!-- obstacle                           -->
             <row number="1" >0 0 0 0 0 0 0 0 0 0</row>
@@ -111,6 +115,7 @@ Sample of input XML-file (`resources/1111111-sample.xml` with comments):
         </grid>
     </map>
     <algorithm>
+
         <!-- Type of algorithm. Now available:  -->
         <!-- 'astar' for A*                     -->
         <!-- 'jp_search' for Jump-Point search  -->
@@ -118,23 +123,30 @@ Sample of input XML-file (`resources/1111111-sample.xml` with comments):
         <!-- 'rstar' for R*                     -->
         <!-- 'rjps' for randomized JPS          -->
         <searchtype>astar</searchtype>
+
         <!-- Type of heuristics. Now available  -->
         <!-- 'euclid', 'manhattan', 'diag' for  -->
         <!-- diagonal, 'cheb' for chebyshev     -->
         <metrictype>euclid</metrictype>
+
         <!-- Heuristics weight, >= 0            -->
         <hweight>1</hweight>
+
         <!-- Strategy on breaking ties, can be  -->
         <!-- 'g-max' and 'g-min'                -->
         <breakingties>g-max</breakingties>
+
         <!-- Weight of moving to neighbor cell  -->
         <!-- horizontally or vertically         -->
         <linecost>1</linecost>
+
         <!-- Same as previous for diagonal      -->
         <diagonalcost>1.41421</diagonalcost>
+
         <!-- Allow diagonal moves, 1 for True,  -->
         <!-- 0 for False                        -->
         <allowdiagonal>1</allowdiagonal>
+
         <!-- Allow squeezing moves, 1 for True, -->
         <!-- 0 for False                        -->
         <allowsqueeze>0</allowsqueeze>
