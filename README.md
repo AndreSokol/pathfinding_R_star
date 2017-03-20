@@ -10,8 +10,9 @@ Course project for HSE Computer Sceince Faculty
 
 1. [Introduction](#introduction)    
 2. [Tools used](#tools-used)    
-3. [Work plan](#work-plan)    
-
+3. [Work plan](#work-plan)
+4. [How to build](#how-to-build)   
+5. [How to run](#how-to-run)
 
 ## Introduction
 
@@ -25,7 +26,7 @@ In this work I will research the R\*-search also known as randomized A\*-search 
 
 This work is based on code written for ISA RAS researches in order to achieve compability with their huge set of pre-generated tests. That is the main reason to choose the following tools:
 
-**Programming language:** C++, XML (for input files)    
+**Programming language:** MinGW GNU C++, XML (for input files)    
 **IDE:** QtCreator 3.6.1    
 **Compiler:** qmake + MinGW         
 **External library:** TinyXML 2 (for parsing input files)    
@@ -36,3 +37,34 @@ This work is based on code written for ISA RAS researches in order to achieve co
 **Jan 2017 - Feb 2017**: implement R\*-search and conduct tests    
 **Feb 2017 - Mar 2017**: theoretical work on possible improvments of R\*    
 **Mar 2017 - Apr 2017**: implement improvments, conduct tests
+
+## How to build
+
+To build the project you can use file 'build.bat'. To build it manually use the following commands:
+
+```
+qmake {project_root}/sources/pathfinding_r_star.pro -r -spec win32-g++ "CONFIG+=release" "CONFIG+=qml_release"
+mingw32-make release
+```
+
+Builded file can be found as `{project_root}/release/release/pathfinding_r_star.exe` if built with bat-file.
+
+## How to run
+
+Sample tasks can be found in `{project_root}/resources`. Here's the example of running one of the tasks:
+
+```
+release/release/pathfinding_r_star resources/3750804-BG.xml
+```
+
+If not set otherwise output for the task will be written in the file named `{input-file}_log.xml`, e.g. `resources/3750804-BG_log.xml` in this case.
+
+If path found you can visualize it by running additional script and passing output XML into it:
+
+```
+python test_utility.py resources/3750804-BG_log.xml 3
+```
+
+_"3" means each cell will by 3 pixels by 3 pixels in resulting image_
+
+Result of visualizing saves in `{project_root}/test_image.bmp`. This is what we get in our case

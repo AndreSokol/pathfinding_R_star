@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-TARGET = ASearch
+TARGET = pathfinding_r_star
 CONFIG   += console
 CONFIG   -= app_bundle
 CONFIG   += c++14
