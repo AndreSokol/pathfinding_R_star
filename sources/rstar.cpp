@@ -51,7 +51,7 @@ SearchResult Rstar::startSearch(ILogger *logger, const Map &map, const Environme
 
     std::unordered_set<Node> closed;
 
-    OpenContainer<Node> open("g-max");
+    OpenContainer<Node> open("g-max", false);
 
 
     Node start;
@@ -191,10 +191,11 @@ std::vector<std::pair<int, int> > Rstar::generateSuccessors(const Node &node, co
         successors.push_back(std::pair<int, int> (map.goal_i, map.goal_j));
     }
 
+    /*
     if (map.height < distance_to_successors && map.width < distance_to_successors) {
         std::cerr << "[WARNING] Distance to successors is bigger than the map \n";
         return successors;
-    }
+    }*/
 
     auto it = successors_circle.begin();
     for(; it < successors_circle.end(); it++) {
@@ -209,13 +210,10 @@ std::vector<std::pair<int, int> > Rstar::generateSuccessors(const Node &node, co
         if(map.CellIsObstacle(successor.first, successor.second)) {
             continue;
         }
-        if (std::find(successors.begin(), successors.end(), successor) != successors.end()) {
+        /*if (std::find(successors.begin(), successors.end(), successor) != successors.end()) {
             continue;
-        }
+        }*/
         if (std::find(predecessors.begin(), predecessors.end(), successor) != predecessors.end()) {
-            continue;
-        }
-        if (closed.count(Node(successor.first, successor.second)) != 0) {
             continue;
         }
 

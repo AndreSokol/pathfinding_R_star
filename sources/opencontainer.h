@@ -8,6 +8,7 @@ class OpenContainer
 {
 private:
     bool _gmax;
+    bool _removeDuplicate = true;
 
     struct _Cmp {
         bool _i_gmax;
@@ -46,11 +47,23 @@ public:
         else                        _gmax = false;
     }
 
+    OpenContainer(std::string breaking_ties, bool removeDuplicate) {
+        if(breaking_ties == "g-max") _gmax = true;
+        else                        _gmax = false;
+
+        _removeDuplicate = removeDuplicate;
+    }
+
     bool find(const T &el) {
         return (_data.count(el) != 0);
     }
 
     void push(T el) {
+        if (!_removeDuplicate) {
+            _data.insert(el);
+            return;
+        }
+
         auto it = _data.find(el);
         if (it == _data.end()) _data.insert(el);
         else {

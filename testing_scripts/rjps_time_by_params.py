@@ -11,8 +11,8 @@ import numpy as np
 
 from copy import deepcopy
 
-DIST_TO_SUCC_VALUE_RANGE = list(range(5, 151, 5))
-NUMBER_OF_SUCC_VALUE_RANGE = list(range(10, 301, 10))
+DIST_TO_SUCC_VALUE_RANGE = list(range(10, 151, 5))
+NUMBER_OF_SUCC_VALUE_RANGE = list(range(5, 101, 5))
 
 def main():
     template_strings = open("template.xml").read()
@@ -37,16 +37,16 @@ def main():
             <diagonalcost>1.41421356237</diagonalcost>
             <allowdiagonal>1</allowdiagonal>
             <allowsqueeze>0</allowsqueeze>
-            <localsearchsteplimit>100</localsearchsteplimit>
+            <localsearchsteplimit>""" + str(p1 * 2)  + """</localsearchsteplimit>
             <distancetosuccessors>""" + str(p1) + """</distancetosuccessors>
-            <numberofsuccessors>""" + str(p2) + """</numberofsuccessors>
+            <numberofsuccessors>""" + str( (6 * p1 * p2 ) // 100) + """</numberofsuccessors>
             """)
 
             input_file = open("input.xml", "w")
             print(input_text, file=input_file)
             input_file.close()
 
-            print("Generated test for:\ndistance to successors", p1, "\nnumber of successors", p2)
+            print("Generated test for:\ndistance to successors", p1, "\nnumber of successors", p2, "%, absolute", (6 * p1 * p2 ) // 100)
 
             avg_time = 0
             for i in range(repeat_times):

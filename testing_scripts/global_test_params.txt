@@ -1,4 +1,4 @@
 rstar
 euclid
 2
-20
+30
