@@ -13,7 +13,8 @@ private:
     struct _Cmp {
         bool _i_gmax;
 
-        Cmp(bool new_gmax){
+        // FIXME
+        void Cmp(bool new_gmax){
             _i_gmax = new_gmax;
         }
 
