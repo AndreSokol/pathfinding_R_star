@@ -1,5 +1,7 @@
 project(PathfindingRStar)
 
+SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "--std=c++11")
+
 set(SOURCES
     tinyxmlparser.cpp
     tinyxmlerror.cpp
@@ -42,8 +44,4 @@ set(HEADERS
     rjpsearch.h
 )
 
-add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
-
-                                                                                                                                                                               
-set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)                                                                                                                  
-set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD_REQUIRED ON)  
+add_executable(${PROJECT_NAME} ${SOURCES})
