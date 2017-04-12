@@ -35,8 +35,8 @@ Rstar::Rstar(double weight, int BT, int SL, int distance_to_successors,
     this->number_of_successors = number_of_successors;
     this->local_search_step_limit = local_search_step_limit;
 
-    std::srand(time(NULL));
-    //distribution = std::uniform_real_distribution<double>(0, 1);
+    std::srand(std::chrono::duration_cast<std::chrono::milliseconds>
+                   (std::chrono::system_clock::now().time_since_epoch()).count());
 }
 
 Rstar::~Rstar()
@@ -95,7 +95,7 @@ SearchResult Rstar::startSearch(ILogger *logger, const Map &map, const Environme
 
             auto current_node_iterator = closed.insert(current_node).first;
 
-            for (auto child_coords : generateSuccessors(current_node, map, closed)) {
+            for (auto child_coords : generateSuccessors(current_node, map)) {
                 child_node = Node(child_coords.first, child_coords.second);
 
                 child_node.parent = &(*current_node_iterator); // FIXME: not sure all this is a must
@@ -166,36 +166,19 @@ void Rstar::calculateHeuristic(Node & a, const Map &map, const EnvironmentOption
     a.F += hweight * a.H;
 }
 
-std::vector<std::pair<int, int> > Rstar::generateSuccessors(const Node &node, const Map &map,
-                                                            const std::unordered_set<Node> &closed)
+std::vector<std::pair<int, int> > Rstar::generateSuccessors(const Node &node, const Map &map)
 {
     std::vector< std::pair<int, int> > successors;
     std::vector< std::pair<int, int> > predecessors;
 
-    Node parent = node;
-
-    for (; parent.parent != nullptr; parent = *parent.parent) {
-        predecessors.push_back(std::pair<int,int>(parent.i, parent.j));
+    Node parent;
+    bool has_parent = false;
+    if (node.parent != nullptr) {
+        parent = *node.parent;
+        has_parent = true;
     }
-    predecessors.push_back(std::pair<int,int>(parent.i, parent.j));
 
-    long double angle;
-
-    int successor_di,
-        successor_dj;
     std::pair<int, int> successor;
-
-    if ((node.i - map.goal_i) * (node.i - map.goal_i) +
-            (node.j - map.goal_j) * (node.j - map.goal_j) <=
-                (int) (distance_to_successors * distance_to_successors)) {
-        successors.push_back(std::pair<int, int> (map.goal_i, map.goal_j));
-    }
-
-    /*
-    if (map.height < distance_to_successors && map.width < distance_to_successors) {
-        std::cerr << "[WARNING] Distance to successors is bigger than the map \n";
-        return successors;
-    }*/
 
     auto it = successors_circle.begin();
     for(; it < successors_circle.end(); it++) {
@@ -210,11 +193,10 @@ std::vector<std::pair<int, int> > Rstar::generateSuccessors(const Node &node, co
         if(map.CellIsObstacle(successor.first, successor.second)) {
             continue;
         }
-        /*if (std::find(successors.begin(), successors.end(), successor) != successors.end()) {
-            continue;
-        }*/
-        if (std::find(predecessors.begin(), predecessors.end(), successor) != predecessors.end()) {
-            continue;
+        if (has_parent) {
+            if (parent.i == successor.first && parent.j == successor.second) {
+                continue;
+            }
         }
 
         successors.push_back(successor);
@@ -227,17 +209,14 @@ std::vector<std::pair<int, int> > Rstar::generateSuccessors(const Node &node, co
         successors.erase(successors.begin() + element_to_erase);
     }
 
-//    std::cerr << node.i << "," << node.j << "\n";
-//    for (auto s : successors) std::cerr << s.first << "," << s.second << "\n";
+    if ((node.i - map.goal_i) * (node.i - map.goal_i) +
+            (node.j - map.goal_j) * (node.j - map.goal_j) <=
+                (int) (distance_to_successors * distance_to_successors)) {
+        successors.push_back(std::pair<int, int> (map.goal_i, map.goal_j));
+    }
 
     return successors;
 }
-
-/*long double Rstar::generateRandomValue()
-{
-
-    return distribution(random_engine);
-}*/
 
 void Rstar::generateCirleOfSuccessors()
 {
