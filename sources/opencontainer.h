@@ -40,7 +40,7 @@ private:
         }
     };
 
-    std::set<T, _Cmp> _data;
+    std::multiset<T, _Cmp> _data;
 
 public:
     OpenContainer(std::string breaking_ties) {

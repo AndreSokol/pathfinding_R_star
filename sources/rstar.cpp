@@ -37,7 +37,7 @@ Rstar::Rstar(double weight, int BT, int SL, int distance_to_successors,
 
     std::srand(std::chrono::duration_cast<std::chrono::milliseconds>
                    (std::chrono::system_clock::now().time_since_epoch()).count());
-}
+    }
 
 Rstar::~Rstar()
 {
@@ -49,15 +49,16 @@ SearchResult Rstar::startSearch(ILogger *logger, const Map &map, const Environme
 
     generateCirleOfSuccessors();
 
-    std::unordered_set<Node> closed;
+    std::multiset<Node> closed;
 
     OpenContainer<Node> open("g-max", false);
-
 
     Node start;
     start.i = map.start_i;
     start.j = map.start_j;
     start.g = 0;
+    start.F = 0;
+    start.H = 0;
 
     Node goal;
     goal.i = map.goal_i;
@@ -93,14 +94,14 @@ SearchResult Rstar::startSearch(ILogger *logger, const Map &map, const Environme
                 break;
             }
 
-            auto current_node_iterator = closed.insert(current_node).first;
+            auto current_node_iterator = closed.insert(current_node);
 
             for (auto child_coords : generateSuccessors(current_node, map)) {
                 child_node = Node(child_coords.first, child_coords.second);
 
                 child_node.parent = &(*current_node_iterator); // FIXME: not sure all this is a must
 
-                // First we put this in g - path length to parent
+                    // First we put this in g - path length to parent
                 // plus distance_to_successors value, as we won't get
                 // there faster
                 child_node.g = current_node.g + distance_to_successors;
@@ -116,8 +117,12 @@ SearchResult Rstar::startSearch(ILogger *logger, const Map &map, const Environme
             current_node.F += local_search_step_limit;
             open.push(current_node);
         }
-    }
 
+        //std::cout << open.size() << " " << closed.size() << "\n";
+        //for (auto it : closed) std::cout << it.i << " " << it.j << " ";
+        //std::cout << "\n";
+    }
+    //std::cout << "Stopped\n";
     auto end_time = std::chrono::system_clock::now();
     sresult.time = (std::chrono::duration<double>(end_time - start_time)).count();
 
@@ -146,6 +151,9 @@ SearchResult Rstar::findLocalPath(const Node &node, const Node &parent_node, con
     Astar localSearch(hweight, breakingties, localSearchStepLimit);
     localSearch.setAlternativePoints(parent_node, node);
     SearchResult localSearchResult = localSearch.startSearch(logger, map, options);
+
+    //if (localSearchResult.pathfound)
+        //std::cout << localSearchResult.pathlength << "\n";
 
     return localSearchResult;
 }
