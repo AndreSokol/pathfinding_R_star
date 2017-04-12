@@ -534,9 +534,9 @@
             <diagonalcost>1.41421356237</diagonalcost>
             <allowdiagonal>1</allowdiagonal>
             <allowsqueeze>0</allowsqueeze>
-            <localsearchsteplimit>260</localsearchsteplimit>
-            <distancetosuccessors>130</distancetosuccessors>
-            <numberofsuccessors>312</numberofsuccessors>
+            <localsearchsteplimit>20</localsearchsteplimit>
+            <distancetosuccessors>10</distancetosuccessors>
+            <numberofsuccessors>3</numberofsuccessors>
             
     </algorithm>
     <options>

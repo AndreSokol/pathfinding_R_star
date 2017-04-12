@@ -1,8 +1,7 @@
-#!/usr/bin/python3
-
 import subprocess, csv
 
 import sys
+import re
 
 import plotly
 import plotly.graph_objs as go
@@ -13,14 +12,61 @@ import numpy as np
 
 from copy import deepcopy
 
-DIST_TO_SUCC_VALUE_RANGE = list(range(10, 151, 5))
-NUMBER_OF_SUCC_VALUE_RANGE = list(range(5, 101, 5))
+ls = ["3839748.xml", "4768079.xml", "4788268-Moscow2.xml", "3620869-WCIII.xml"]
+RUN_NUMBER = 4
+REPEAT_TIMES = 4
+
+DIST_TO_SUCC_VALUE_RANGE = list(range(10, 151, 10))
+NUMBER_OF_SUCC_VALUE_RANGE = list(range(10, 101, 10))
+
+def gen():
+    global_test_params = open("global_test_params.txt").read().split()
+    print("Generating tests...")
+    for i in range(RUN_NUMBER):
+        I = open("../resources/" + ls[i])
+        new_map = I.read()
+        for p2 in NUMBER_OF_SUCC_VALUE_RANGE:
+            for p1 in DIST_TO_SUCC_VALUE_RANGE:
+                new_map = re.sub(r"<searchtype>[\w]*</searchtype>",
+                "<searchtype>" + global_test_params[0] + "</searchtype>",
+                new_map)
+
+                new_map = re.sub(r"<metrictype>[\w]*</metrictype>",
+                "<metrictype>" + global_test_params[1] + "</metrictype>",
+                new_map)
+
+                new_map = re.sub(r"<hweight>[\w]*</hweight>",
+                "<hweight>" + global_test_params[2] + "</hweight>",
+                new_map)
+
+                new_map = re.sub(r"<localsearchsteplimit>[\w]*</localsearchsteplimit>",
+                "<localsearchsteplimit>" + str(p1 * 2) + "</localsearchsteplimit>",
+                new_map)
+
+                new_map = re.sub(r"<numberofsuccessors>[\w]*</numberofsuccessors>",
+                "<numberofsuccessors>" + str( (6 * p1 * p2 ) // 100) + "</numberofsuccessors>",
+                new_map)
+
+                new_map = re.sub(r"<distancetosuccessors>[\w]*</distancetosuccessors>",
+                "<distancetosuccessors>" + str(p1) + "</distancetosuccessors>",
+                new_map)
+
+                O = open("tests/test_" + str(i) + "_" + str(p1) + "_" + str(p2) + ".xml", "w")
+                O.write(new_map)
+                O.close()
+
 
 def main():
-    template_strings = open("template.xml").read()
-    global_test_params = open("global_test_params.txt").read().split()
+    #maps = []
+    #for i in range(RUN_NUMBER):
+    #    I = open("../resources/" + ls[i])
+    #    maps.append(I.read())
+    #    I.close()
 
-    repeat_times = int(global_test_params[3])
+    #template_strings = open("template.xml").read()
+    #global_test_params = open("global_test_params.txt").read().split()
+
+    #repeat_times = int(global_test_params[3])
 
     stats_file = open("stats.csv", "w", newline="", encoding="utf-8")
     stats = csv.writer(stats_file, delimiter=",")
@@ -29,43 +75,38 @@ def main():
     for p2 in NUMBER_OF_SUCC_VALUE_RANGE:
         new_stats_row = [str(p2)]
         for p1 in DIST_TO_SUCC_VALUE_RANGE:
+            print("p1", p1, "p2", p2)
+            avg_time = 0.0
+            for i in range(0, len(ls)):
+                print(i+1, "of", len(ls))
+                print("../testing_scripts/tests/test_" + str(i) + "_" + str(p1) + "_" + str(p2) + ".xml")
 
-            input_text = template_strings.replace("# PASTE PARAMS #", """
-            <searchtype>""" + global_test_params[0] + """</searchtype>
-            <metrictype>""" + global_test_params[1] + """</metrictype>
-            <hweight>""" + global_test_params[2] + """</hweight>
-            <breakingties>g-max</breakingties>
-            <linecost>1</linecost>
-            <diagonalcost>1.41421356237</diagonalcost>
-            <allowdiagonal>1</allowdiagonal>
-            <allowsqueeze>0</allowsqueeze>
-            <localsearchsteplimit>""" + str(p1 * 2)  + """</localsearchsteplimit>
-            <distancetosuccessors>""" + str(p1) + """</distancetosuccessors>
-            <numberofsuccessors>""" + str( (6 * p1 * p2 ) // 100) + """</numberofsuccessors>
-            """)
-
-            input_file = open("input.xml", "w")
-            print(input_text, file=input_file)
-            input_file.close()
-
-            print("Generated test for:\ndistance to successors", p1, "\nnumber of successors", p2, "%, absolute", (6 * p1 * p2 ) // 100)
-
-            avg_time = 0
-            for i in range(repeat_times):
-                print(i+1, "of", repeat_times)
-
-                p = subprocess.Popen(["../release/release/asearch.exe", "../testing_scripts/input.xml"],stdout=subprocess.PIPE,stdin=subprocess.PIPE)
-                out = p.communicate()
-                p.stdin.close()
-
-                out = out[0].decode().split("\r\n")
-                for s in out:
-                    if s[:5] == "time=":
-                        print(s)
-                        avg_time += float(s[5:])
-                        break
-                #print()
-            avg_time = avg_time / repeat_times
+                for j in range(REPEAT_TIMES):
+                    print(" ", j + 1, "out of", REPEAT_TIMES)
+                    rerun_counter = 0
+                    while(True):
+                        rerun_counter += 1
+                        try:
+                            p = subprocess.run(["../release/release/pathfinding_r_star.exe",
+                            "../testing_scripts/tests/test_" + str(i) + "_" + str(p1) + "_" + str(p2) + ".xml"],
+                            stdout=subprocess.PIPE,stdin=subprocess.PIPE, timeout=4)
+                            out = p.stdout.decode()
+                            break
+                        except subprocess.TimeoutExpired:
+                            print("  Unfortunate run (>3s), rerunning now...")
+                        if rerun_counter == 5:
+                            break
+                    if rerun_counter == 5:
+                        print("Limit reached, setting time as 3s")
+                        avg_time += 4
+                    else:
+                        out = out.split("\r\n")
+                        for s in out:
+                            if s[:5] == "time=":
+                                print(" ", s)
+                                avg_time += float(s[5:])
+                                break
+            avg_time = avg_time / len(ls) / REPEAT_TIMES
             print("result", avg_time)
             print()
             new_stats_row += [avg_time]
@@ -80,7 +121,7 @@ def plot():
     test_stats = open("global_test_params.txt").read().split()
 
     data = [
-        go.Heatmap(
+        go.Surface(
             z=z_data.as_matrix(),#z_data2
             x=z_data.columns,
             y=z_data.index,
@@ -230,5 +271,7 @@ if __name__ == '__main__':
         main()
     elif sys.argv[1] == '-plot':
         plot()
+    elif sys.argv[1] == '-gen':
+        gen()
     elif sys.argv[1] == '-fit':
         fit()

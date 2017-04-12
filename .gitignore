@@ -6,3 +6,5 @@ test_image.bmp
 
 **/*.pro.user
 resources/*.txt
+
+testing_scripts/tests/
