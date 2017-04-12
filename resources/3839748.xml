@@ -533,6 +533,9 @@
         <bottleneck>0</bottleneck>
         <allowdiagonal>1</allowdiagonal>
         <searchtype>astar</searchtype>
+        <distancetosuccessors>20</distancetosuccessors>
+        <numberofsuccessors>10</numberofsuccessors>
+        <localsearchsteplimit>40</localsearchsteplimit>
     </algorithm>
     <options>
         <loglevel>1</loglevel>

@@ -514,6 +514,23 @@
             <row>0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 1 1 1 1 0 0 0 0 1 1 1 1 1 1 0 0 0 0 0 0 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 1 1 1 1</row>
         </grid>
     </map>
-    <algorithm><metrictype>euclid</metrictype><searchtype>astar</searchtype><hweight>1</hweight><breakingties>g-max</breakingties><linecost>1</linecost><diagonalcost>1.41421356237</diagonalcost><allowdiagonal>1</allowdiagonal><allowsqueeze>0</allowsqueeze><useresetparent>1</useresetparent></algorithm>
-    <options><loglevel>1</loglevel><logpath /><logfilename /></options>
+    <algorithm>
+        <metrictype>euclid</metrictype>
+        <searchtype>astar</searchtype>
+        <hweight>1</hweight>
+        <breakingties>g-max</breakingties>
+        <linecost>1</linecost>
+        <diagonalcost>1.41421356237</diagonalcost>
+        <allowdiagonal>1</allowdiagonal>
+        <allowsqueeze>0</allowsqueeze>
+        <useresetparent>1</useresetparent>
+        <distancetosuccessors>20</distancetosuccessors>
+        <numberofsuccessors>10</numberofsuccessors>
+        <localsearchsteplimit>40</localsearchsteplimit>
+    </algorithm>
+    <options>
+        <loglevel>1</loglevel>
+        <logpath />
+        <logfilename />
+    </options>
 </root>
