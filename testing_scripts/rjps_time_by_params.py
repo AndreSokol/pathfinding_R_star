@@ -16,8 +16,8 @@ ls = ["3839748.xml", "4768079.xml", "4788268-Moscow2.xml", "3620869-WCIII.xml"]
 RUN_NUMBER = 4
 REPEAT_TIMES = 4
 
-DIST_TO_SUCC_VALUE_RANGE = list(range(10, 151, 10))
-NUMBER_OF_SUCC_VALUE_RANGE = list(range(10, 101, 10))
+DIST_TO_SUCC_VALUE_RANGE = list(range(10, 201, 20))
+NUMBER_OF_SUCC_VALUE_RANGE = list(range(10, 101, 20))
 
 def gen():
     global_test_params = open("global_test_params.txt").read().split()
@@ -57,17 +57,6 @@ def gen():
 
 
 def main():
-    #maps = []
-    #for i in range(RUN_NUMBER):
-    #    I = open("../resources/" + ls[i])
-    #    maps.append(I.read())
-    #    I.close()
-
-    #template_strings = open("template.xml").read()
-    #global_test_params = open("global_test_params.txt").read().split()
-
-    #repeat_times = int(global_test_params[3])
-
     stats_file = open("stats.csv", "w", newline="", encoding="utf-8")
     stats = csv.writer(stats_file, delimiter=",")
 
@@ -83,29 +72,20 @@ def main():
 
                 for j in range(REPEAT_TIMES):
                     print(" ", j + 1, "out of", REPEAT_TIMES)
-                    rerun_counter = 0
-                    while(True):
-                        rerun_counter += 1
-                        try:
-                            p = subprocess.run(["../release/release/pathfinding_r_star.exe",
-                            "../testing_scripts/tests/test_" + str(i) + "_" + str(p1) + "_" + str(p2) + ".xml"],
-                            stdout=subprocess.PIPE,stdin=subprocess.PIPE, timeout=4)
-                            out = p.stdout.decode()
-                            break
-                        except subprocess.TimeoutExpired:
-                            print("  Unfortunate run (>3s), rerunning now...")
-                        if rerun_counter == 5:
-                            break
-                    if rerun_counter == 5:
-                        print("Limit reached, setting time as 3s")
-                        avg_time += 4
-                    else:
+                    try:
+                        p = subprocess.run(["../release/release/pathfinding_r_star.exe",
+                        "../testing_scripts/tests/test_" + str(i) + "_" + str(p1) + "_" + str(p2) + ".xml"],
+                        stdout=subprocess.PIPE,stdin=subprocess.PIPE, timeout=10)
+                        out = p.stdout.decode()
                         out = out.split("\r\n")
                         for s in out:
                             if s[:5] == "time=":
-                                print(" ", s)
+                                print("  ", s)
                                 avg_time += float(s[5:])
                                 break
+                    except subprocess.TimeoutExpired:
+                        print("   Too long run (>10s), terminated. Time count as 10s")
+                        avg_time += 10.0
             avg_time = avg_time / len(ls) / REPEAT_TIMES
             print("result", avg_time)
             print()
