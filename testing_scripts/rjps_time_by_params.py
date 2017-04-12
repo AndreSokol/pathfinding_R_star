@@ -40,7 +40,7 @@ def gen():
                 new_map)
 
                 new_map = re.sub(r"<localsearchsteplimit>[\w]*</localsearchsteplimit>",
-                "<localsearchsteplimit>" + str(p1 * 2) + "</localsearchsteplimit>",
+                "<localsearchsteplimit>" + str(p1 * 3) + "</localsearchsteplimit>",
                 new_map)
 
                 new_map = re.sub(r"<numberofsuccessors>[\w]*</numberofsuccessors>",
@@ -49,6 +49,14 @@ def gen():
 
                 new_map = re.sub(r"<distancetosuccessors>[\w]*</distancetosuccessors>",
                 "<distancetosuccessors>" + str(p1) + "</distancetosuccessors>",
+                new_map)
+
+                new_map = re.sub(r"<linecost>[\w]*</linecost>",
+                "<linecost>1</linecost>",
+                new_map)
+
+                new_map = re.sub(r"<diagonalcost>[\w]*</diagonalcost>",
+                "<diagonalcost>1.41421356237</diagonalcost>",
                 new_map)
 
                 O = open("tests/test_" + str(i) + "_" + str(p1) + "_" + str(p2) + ".xml", "w")
