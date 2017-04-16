@@ -1,0 +1,6 @@
+maps: "3839748.xml", "4768079.xml", "4788268-Moscow2.xml", "3620869-WCIII.xml"
+repeat times: 4
+timeout: 10 seconds
+DTS: from 10 to 200, step 20
+NOS: from 10% to 100%, step 20%
+LSSL: 6 * DTS
