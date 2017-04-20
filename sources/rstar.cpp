@@ -47,6 +47,9 @@ Rstar::~Rstar()
 SearchResult Rstar::startSearch(ILogger *logger, const Map &map, const EnvironmentOptions &options) {
     auto start_time = std::chrono::system_clock::now();
 
+    unsigned int localSearchNodesCreated = 0;
+    sresult.numberofsteps = 0;
+
     generateCirleOfSuccessors();
 
     std::multiset<Node> closed;
@@ -82,6 +85,8 @@ SearchResult Rstar::startSearch(ILogger *logger, const Map &map, const Environme
                                            logger, options, local_search_step_limit);
         }
 
+        localSearchNodesCreated = std::max(localSearchNodesCreated, localSearchResult.nodescreated);
+        sresult.numberofsteps += localSearchResult.numberofsteps;
 
         if(localSearchResult.pathfound || start == current_node) {
             if (current_node != start) {
@@ -119,14 +124,11 @@ SearchResult Rstar::startSearch(ILogger *logger, const Map &map, const Environme
             current_node.F += localSearchResult.max_F;
             open.push(current_node);
         }
-
-        //std::cout << open.size() << " " << closed.size() << "\n";
-        //for (auto it : closed) std::cout << it.i << " " << it.j << " ";
-        //std::cout << "\n";
+        sresult.numberofsteps++;
     }
-    //std::cout << "Stopped\n";
     auto end_time = std::chrono::system_clock::now();
     sresult.time = (std::chrono::duration<double>(end_time - start_time)).count();
+    sresult.nodescreated = open.size() + closed.size() + localSearchNodesCreated;
 
     if (sresult.pathfound) {
         sresult.hppath = new NodeList();
@@ -139,6 +141,7 @@ SearchResult Rstar::startSearch(ILogger *logger, const Map &map, const Environme
             sresult.JoinLpPaths( localSearchResult );
             sresult.hppath->push_front(current_node);
             current_node = *current_node.parent;
+            sresult.numberofsteps += localSearchResult.numberofsteps;
         }
 
         sresult.hppath->push_front(current_node); // add start node
@@ -188,16 +191,16 @@ bool Rstar::isNodePerpective(Node &a, const Map &map, const EnvironmentOptions &
                                                                         abs(di - dj) * options.linecost;
     else H = std::max(di, dj) * options.linecost;
 
-    di = abs(a.i - a.parent->i);
+    /*di = abs(a.i - a.parent->i);
     dj = abs(a.j - a.parent->j);
 
     if(options.metrictype == CN_SP_MT_EUCL)       dH = sqrt(di * di + dj * dj) * options.linecost;
     else if (options.metrictype == CN_SP_MT_MANH) dH = (di + dj) * options.linecost;
     else if (options.metrictype == CN_SP_MT_DIAG) dH = std::min(di, dj) * options.diagonalcost +
                                                                         abs(di - dj) * options.linecost;
-    else dH = std::max(di, dj) * options.linecost;
+    else dH = std::max(di, dj) * options.linecost;*/
 
-    return (a.parent->g < hweight * (H - dH));
+    return (a.parent->g + distance_to_successors < hweight * H);
 }
 
 std::vector<std::pair<int, int> > Rstar::generateSuccessors(const Node &node, const Map &map)
