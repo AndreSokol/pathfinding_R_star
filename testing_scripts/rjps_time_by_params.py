@@ -16,8 +16,8 @@ ls = ["3839748.xml", "4768079.xml", "4788268-Moscow2.xml", "3620869-WCIII.xml"]
 RUN_NUMBER = 4
 REPEAT_TIMES = 4
 
-DIST_TO_SUCC_VALUE_RANGE = list(range(10, 201, 20))
-NUMBER_OF_SUCC_VALUE_RANGE = list(range(10, 101, 20))
+DIST_TO_SUCC_VALUE_RANGE = list(range(100, 171, 5))
+NUMBER_OF_SUCC_VALUE_RANGE = list(range(10, 101, 5))
 
 def gen():
     global_test_params = open("global_test_params.txt").read().split()
