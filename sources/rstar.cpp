@@ -101,12 +101,14 @@ SearchResult Rstar::startSearch(ILogger *logger, const Map &map, const Environme
 
                 child_node.parent = &(*current_node_iterator); // FIXME: not sure all this is a must
 
-                    // First we put this in g - path length to parent
+                // First we put this in g - path length to parent
                 // plus distance_to_successors value, as we won't get
                 // there faster
                 child_node.g = current_node.g + distance_to_successors;
 
                 calculateHeuristic(child_node, map, options);
+
+                if (!isNodePerpective(child_node, map, options)) child_node.AVOID = true;
 
                 open.push(child_node);
             }
@@ -172,6 +174,30 @@ void Rstar::calculateHeuristic(Node & a, const Map &map, const EnvironmentOption
     else a.H = std::max(di, dj) * options.linecost;
 
     a.F += hweight * a.H;
+}
+
+bool Rstar::isNodePerpective(Node &a, const Map &map, const EnvironmentOptions &options) {
+    double H, dH; // H - start to a, dH - a to a.parent
+
+    int di = abs(a.i - map.start_i),
+        dj = abs(a.j - map.start_j);
+
+    if(options.metrictype == CN_SP_MT_EUCL)       H = sqrt(di * di + dj * dj) * options.linecost;
+    else if (options.metrictype == CN_SP_MT_MANH) H = (di + dj) * options.linecost;
+    else if (options.metrictype == CN_SP_MT_DIAG) H = std::min(di, dj) * options.diagonalcost +
+                                                                        abs(di - dj) * options.linecost;
+    else H = std::max(di, dj) * options.linecost;
+
+    di = abs(a.i - a.parent->i);
+    dj = abs(a.j - a.parent->j);
+
+    if(options.metrictype == CN_SP_MT_EUCL)       dH = sqrt(di * di + dj * dj) * options.linecost;
+    else if (options.metrictype == CN_SP_MT_MANH) dH = (di + dj) * options.linecost;
+    else if (options.metrictype == CN_SP_MT_DIAG) dH = std::min(di, dj) * options.diagonalcost +
+                                                                        abs(di - dj) * options.linecost;
+    else dH = std::max(di, dj) * options.linecost;
+
+    return (a.parent->g < hweight * (H - dH));
 }
 
 std::vector<std::pair<int, int> > Rstar::generateSuccessors(const Node &node, const Map &map)

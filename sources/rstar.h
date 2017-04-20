@@ -26,6 +26,7 @@ protected:
     SearchResult findLocalPath(const Node &node, const Node &parent_node, const Map &map,
                        ILogger *logger, const EnvironmentOptions &options, int localSearchStepLimit);
     void calculateHeuristic(Node &a, const Map &map, const EnvironmentOptions &options);
+    bool isNodePerpective(Node &a, const Map &map, const EnvironmentOptions &options);
 
     std::vector< std::pair<int,int> > generateSuccessors(const Node &node, const Map &map);
 
