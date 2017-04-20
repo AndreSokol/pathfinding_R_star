@@ -114,7 +114,7 @@ SearchResult Rstar::startSearch(ILogger *logger, const Map &map, const Environme
         else if(!current_node.AVOID) {
             current_node.AVOID = true;
             // Recount heuristics
-            current_node.F += local_search_step_limit;
+            current_node.F += localSearchResult.max_F;
             open.push(current_node);
         }
 

@@ -56,6 +56,7 @@ SearchResult Astar::startSearch(ILogger *Logger, const Map &Map, const Environme
         if (closed.count(current_node) != 0) continue;
 
         auto current_node_iterator = closed.insert(current_node).first;
+        sresult.max_F = std::max(sresult.max_F, current_node.F);
 
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {

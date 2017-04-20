@@ -14,6 +14,8 @@ struct SearchResult
         unsigned int nodescreated; //|OPEN| + |CLOSE| = число созданных нодов (= показатель емкостной эффективности поиска)
         unsigned int numberofsteps; //число итераций (= показатель временной эффективности поиска)
         double time; //фактически затраченное время (= "абсолютный" (но зависящий от конкретной реализации) показатель временной эффективности поиска)
+        double max_F = 0; // maximum F-value (for R*)
+
         SearchResult()
         {
             pathfound = false;
