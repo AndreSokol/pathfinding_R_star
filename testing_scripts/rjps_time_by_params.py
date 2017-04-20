@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import subprocess, csv
 
 import sys
@@ -12,18 +14,28 @@ import numpy as np
 
 from copy import deepcopy
 
-ls = ["3839748.xml", "4768079.xml", "4788268-Moscow2.xml", "3620869-WCIII.xml"]
-RUN_NUMBER = 4
-REPEAT_TIMES = 4
+#ls = ["3839748.xml", "4768079.xml", "4788268-Moscow2.xml", "3620869-WCIII.xml"]
+ls = ["map1_1.xml", "map1_2.xml", "map1_3.xml", "map1_4.xml", "map1_5.xml",
+      "map2_1.xml", "map2_2.xml", "map2_3.xml", "map2_4.xml", "map2_5.xml",
+      "map3_1.xml", "map3_2.xml", "map3_3.xml", "map3_4.xml", "map3_5.xml",
+      "map4_1.xml", "map4_2.xml", "map4_3.xml", "map4_4.xml", "map4_5.xml"]
 
-DIST_TO_SUCC_VALUE_RANGE = list(range(100, 171, 5))
-NUMBER_OF_SUCC_VALUE_RANGE = list(range(10, 101, 5))
+dist = [487.6, 464.8, 496.7, 459.7, 469.0,
+        488.6, 612.0, 483.5, 490.6, 436.0,
+        449.1, 511.3, 474.8, 475.2, 471.9,
+        386.9, 363.3, 442.7, 523.3, 364.7]
+
+RUN_NUMBER = len(ls)
+REPEAT_TIMES = 1
+
+DIST_TO_SUCC_VALUE_RANGE = list(range(2, 41, 8))
+NUMBER_OF_SUCC_VALUE_RANGE = list(range(10, 101, 20))
 
 def gen():
     global_test_params = open("global_test_params.txt").read().split()
     print("Generating tests...")
-    for i in range(RUN_NUMBER):
-        I = open("../resources/" + ls[i])
+    for i in range(len(ls)):
+        I = open("templates/" + ls[i])
         new_map = I.read()
         for p2 in NUMBER_OF_SUCC_VALUE_RANGE:
             for p1 in DIST_TO_SUCC_VALUE_RANGE:
@@ -40,15 +52,15 @@ def gen():
                 new_map)
 
                 new_map = re.sub(r"<localsearchsteplimit>[\w]*</localsearchsteplimit>",
-                "<localsearchsteplimit>" + str(p1 * 3) + "</localsearchsteplimit>",
+                "<localsearchsteplimit>" + str(int(p1 * dist[i]) // 100 * 3) + "</localsearchsteplimit>",
                 new_map)
 
                 new_map = re.sub(r"<numberofsuccessors>[\w]*</numberofsuccessors>",
-                "<numberofsuccessors>" + str( (6 * p1 * p2 ) // 100) + "</numberofsuccessors>",
+                "<numberofsuccessors>" + str( int(2 * 3.1415 * dist[i] *  p1 * p2) // 100 // 100) + "</numberofsuccessors>",
                 new_map)
 
                 new_map = re.sub(r"<distancetosuccessors>[\w]*</distancetosuccessors>",
-                "<distancetosuccessors>" + str(p1) + "</distancetosuccessors>",
+                "<distancetosuccessors>" + str(int(dist[i] * p1) // 100) + "</distancetosuccessors>",
                 new_map)
 
                 new_map = re.sub(r"<linecost>[\w]*</linecost>",
