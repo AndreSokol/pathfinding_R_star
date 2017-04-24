@@ -52,7 +52,7 @@ def gen():
                 new_map)
 
                 new_map = re.sub(r"<localsearchsteplimit>[\w]*</localsearchsteplimit>",
-                "<localsearchsteplimit>" + str(int(p1 * dist[i]) // 100 * 7) + "</localsearchsteplimit>",
+                "<localsearchsteplimit>" + str(int(p1 * dist[i]) // 100 * 10) + "</localsearchsteplimit>",
                 new_map)
 
                 new_map = re.sub(r"<numberofsuccessors>[\w]*</numberofsuccessors>",
