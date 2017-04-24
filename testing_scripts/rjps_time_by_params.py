@@ -52,7 +52,7 @@ def gen():
                 new_map)
 
                 new_map = re.sub(r"<localsearchsteplimit>[\w]*</localsearchsteplimit>",
-                "<localsearchsteplimit>" + str(int(p1 * dist[i]) // 100 * 3) + "</localsearchsteplimit>",
+                "<localsearchsteplimit>" + str(int(p1 * dist[i]) // 100 * 7) + "</localsearchsteplimit>",
                 new_map)
 
                 new_map = re.sub(r"<numberofsuccessors>[\w]*</numberofsuccessors>",
@@ -93,11 +93,11 @@ def main():
                 for j in range(REPEAT_TIMES):
                     print(" ", j + 1, "out of", REPEAT_TIMES)
                     try:
-                        p = subprocess.run(["../release/release/pathfinding_r_star.exe",
+                        p = subprocess.run(["../release/PathfindingRStar",
                         "../testing_scripts/tests/test_" + str(i) + "_" + str(p1) + "_" + str(p2) + ".xml"],
                         stdout=subprocess.PIPE,stdin=subprocess.PIPE, timeout=10)
                         out = p.stdout.decode()
-                        out = out.split("\r\n")
+                        out = out.split("\n")
                         for s in out:
                             if s[:5] == "time=":
                                 print("  ", s)
