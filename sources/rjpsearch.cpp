@@ -46,6 +46,8 @@ RJPSearch::~RJPSearch()
 SearchResult RJPSearch::startSearch(ILogger *logger, const Map &map, const EnvironmentOptions &options) {
     auto start_time = std::chrono::system_clock::now();
 
+    std::cerr << "RJPS\n";
+
     generateCirleOfSuccessors();
 
     std::unordered_set<Node> closed;
@@ -201,31 +203,15 @@ std::vector<std::pair<int, int> > RJPSearch::generateSuccessors(const Node &node
                                                             const std::unordered_set<Node> &closed)
 {
     std::vector< std::pair<int, int> > successors;
-    std::vector< std::pair<int, int> > predecessors;
 
-    Node parent = node;
-
-    for (; parent.parent != nullptr; parent = *parent.parent) {
-        predecessors.push_back(std::pair<int,int>(parent.i, parent.j));
+    Node parent;
+    bool has_parent = false;
+    if (node.parent != nullptr) {
+        parent = *node.parent;
+        has_parent = true;
     }
-    predecessors.push_back(std::pair<int,int>(parent.i, parent.j));
 
-    long double angle;
-
-    int successor_di,
-        successor_dj;
     std::pair<int, int> successor;
-
-    if ((node.i - map.goal_i) * (node.i - map.goal_i) +
-            (node.j - map.goal_j) * (node.j - map.goal_j) <=
-                (int) (distance_to_successors * distance_to_successors)) {
-        successors.push_back(std::pair<int, int> (map.goal_i, map.goal_j));
-    }
-
-    if (map.height < distance_to_successors && map.width < distance_to_successors) {
-        std::cerr << "[WARNING] Distance to successors is bigger than the map \n";
-        return successors;
-    }
 
     auto it = successors_circle.begin();
     for(; it < successors_circle.end(); it++) {
@@ -240,14 +226,10 @@ std::vector<std::pair<int, int> > RJPSearch::generateSuccessors(const Node &node
         if(map.CellIsObstacle(successor.first, successor.second)) {
             continue;
         }
-        if (std::find(successors.begin(), successors.end(), successor) != successors.end()) {
-            continue;
-        }
-        if (std::find(predecessors.begin(), predecessors.end(), successor) != predecessors.end()) {
-            continue;
-        }
-        if (closed.count(Node(successor.first, successor.second)) != 0) {
-            continue;
+        if (has_parent) {
+            if (parent.i == successor.first && parent.j == successor.second) {
+                continue;
+            }
         }
 
         successors.push_back(successor);
@@ -258,6 +240,12 @@ std::vector<std::pair<int, int> > RJPSearch::generateSuccessors(const Node &node
         element_to_erase = rand() % successors.size();
 
         successors.erase(successors.begin() + element_to_erase);
+    }
+
+    if ((node.i - map.goal_i) * (node.i - map.goal_i) +
+            (node.j - map.goal_j) * (node.j - map.goal_j) <=
+                (int) (distance_to_successors * distance_to_successors)) {
+        successors.push_back(std::pair<int, int> (map.goal_i, map.goal_j));
     }
 
     return successors;

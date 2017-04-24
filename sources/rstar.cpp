@@ -206,7 +206,6 @@ bool Rstar::isNodePerpective(Node &a, const Map &map, const EnvironmentOptions &
 std::vector<std::pair<int, int> > Rstar::generateSuccessors(const Node &node, const Map &map)
 {
     std::vector< std::pair<int, int> > successors;
-    std::vector< std::pair<int, int> > predecessors;
 
     Node parent;
     bool has_parent = false;

@@ -68,6 +68,8 @@ bool Config::getConfig(const char* FileName)
             SearchParams[CN_SP_ST] = CN_SP_ST_TH;
         if (value == CNS_SP_ST_RSTAR)
             SearchParams[CN_SP_ST] = CN_SP_ST_RSTAR;
+        if (value == CNS_SP_ST_RJPS)
+            SearchParams[CN_SP_ST] = CN_SP_ST_RJPS;
         element = algorithm -> FirstChildElement(CNS_TAG_HW);
         if (!element) {
             std::cout << "Warning! No '"<< CNS_TAG_HW <<"' tag found in algorithm section." << std::endl;
