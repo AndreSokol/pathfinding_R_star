@@ -29,8 +29,8 @@ dist = [#487.6, 464.8, 496.7, 459.7, 469.0,
 RUN_NUMBER = len(ls)
 REPEAT_TIMES = 1
 
-DIST_TO_SUCC_VALUE_RANGE = list(range(20, 41, 2))
-NUMBER_OF_SUCC_VALUE_RANGE = list(range(1, 40, 4))
+DIST_TO_SUCC_VALUE_RANGE = list(range(1, 101, 10))
+NUMBER_OF_SUCC_VALUE_RANGE = list(range(1, 101, 10))
 
 def gen():
     start_time = time()
@@ -42,7 +42,7 @@ def gen():
         for p2 in NUMBER_OF_SUCC_VALUE_RANGE:
             for p1 in DIST_TO_SUCC_VALUE_RANGE:
                 new_map = re.sub(r"<searchtype>[\w]*</searchtype>",
-                "<searchtype>" + global_test_params[0] + "</searchtype>",
+                "<searchtype>rjps</searchtype>",
                 new_map)
 
                 new_map = re.sub(r"<metrictype>[\w]*</metrictype>",
@@ -82,7 +82,7 @@ def gen():
 def main():
     start_time = time()
 
-    stats_file = open("stats.csv", "w", newline="", encoding="utf-8")
+    stats_file = open("stats_rjps.csv", "w", newline="", encoding="utf-8")
     stats = csv.writer(stats_file, delimiter=",")
 
     stats.writerow([""] + DIST_TO_SUCC_VALUE_RANGE)
@@ -126,7 +126,7 @@ def main():
 
 
 def plot():
-    z_data = pd.read_csv('stats.csv', index_col=0)
+    z_data = pd.read_csv('stats_rjps.csv', index_col=0)
     test_stats = open("global_test_params.txt").read().split()
 
     data = [
@@ -140,7 +140,7 @@ def plot():
         )
     ]
     layout = go.Layout(
-        title='R* heatmap, metrics=' + test_stats[1] + ', hweight=' + test_stats[2] + ', average of ' + test_stats[3],
+        title='RJPS heatmap, metrics=' + test_stats[1] + ', hweight=' + test_stats[2],
         xaxis= dict(
             title= 'Distance to successors',
             #ticklen= 5,
@@ -181,7 +181,7 @@ def plot():
 
 
 def fit():
-    z_data = pd.read_csv('stats.csv', index_col=0)
+    z_data = pd.read_csv('stats_rjps.csv', index_col=0)
     test_stats = open("global_test_params.txt").read().split()
 
     z_data_old = deepcopy(z_data)

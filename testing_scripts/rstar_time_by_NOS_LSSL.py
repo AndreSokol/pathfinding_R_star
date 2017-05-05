@@ -29,7 +29,7 @@ dist = [#487.6, 464.8, 496.7, 459.7, 469.0,
 RUN_NUMBER = len(ls)
 REPEAT_TIMES = 1
 
-DIST_TO_SUCC_VALUE_RANGE = list(range(20, 41, 2))
+LSSL_RANGE = list(range(2, 20, 2))
 NUMBER_OF_SUCC_VALUE_RANGE = list(range(1, 40, 4))
 
 def gen():
@@ -40,7 +40,7 @@ def gen():
         I = open("templates/" + ls[i])
         new_map = I.read()
         for p2 in NUMBER_OF_SUCC_VALUE_RANGE:
-            for p1 in DIST_TO_SUCC_VALUE_RANGE:
+            for p1 in LSSL_RANGE:
                 new_map = re.sub(r"<searchtype>[\w]*</searchtype>",
                 "<searchtype>" + global_test_params[0] + "</searchtype>",
                 new_map)
@@ -54,15 +54,15 @@ def gen():
                 new_map)
 
                 new_map = re.sub(r"<localsearchsteplimit>[\w]*</localsearchsteplimit>",
-                "<localsearchsteplimit>" + str(int(p1 * dist[i]) // 100 * 6) + "</localsearchsteplimit>",
+                "<localsearchsteplimit>" + str(int(dist[i] * 0.28 * p1)) + "</localsearchsteplimit>",
                 new_map)
 
                 new_map = re.sub(r"<numberofsuccessors>[\w]*</numberofsuccessors>",
-                "<numberofsuccessors>" + str( int(2 * 3.1415 * dist[i] *  p1 * p2) // 100 // 100) + "</numberofsuccessors>",
+                "<numberofsuccessors>" + str( int(2 * 3.1415 * dist[i] * 0.28 * p2) // 100) + "</numberofsuccessors>",
                 new_map)
 
                 new_map = re.sub(r"<distancetosuccessors>[\w]*</distancetosuccessors>",
-                "<distancetosuccessors>" + str(int(dist[i] * p1) // 100) + "</distancetosuccessors>",
+                "<distancetosuccessors>" + str(int(dist[i] * 0.28)) + "</distancetosuccessors>",
                 new_map)
 
                 new_map = re.sub(r"<linecost>[\w]*</linecost>",
@@ -85,10 +85,10 @@ def main():
     stats_file = open("stats.csv", "w", newline="", encoding="utf-8")
     stats = csv.writer(stats_file, delimiter=",")
 
-    stats.writerow([""] + DIST_TO_SUCC_VALUE_RANGE)
+    stats.writerow([""] + LSSL_RANGE)
     for p2 in NUMBER_OF_SUCC_VALUE_RANGE:
         new_stats_row = [str(p2)]
-        for p1 in DIST_TO_SUCC_VALUE_RANGE:
+        for p1 in LSSL_RANGE:
             print("p1", p1, "p2", p2)
             avg_time = 0.0
             for i in range(0, len(ls)):
@@ -142,7 +142,7 @@ def plot():
     layout = go.Layout(
         title='R* heatmap, metrics=' + test_stats[1] + ', hweight=' + test_stats[2] + ', average of ' + test_stats[3],
         xaxis= dict(
-            title= 'Distance to successors',
+            title= 'LSSL',
             #ticklen= 5,
             #dtick=1,
             #ticks='outside',
@@ -155,7 +155,7 @@ def plot():
         ),
         scene=dict(
             xaxis= dict(
-                title= 'Distance to successors',
+                title= 'LSSL',
             ),
             yaxis=dict(
                 title= 'Number of successors',

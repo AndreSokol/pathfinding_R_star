@@ -1,8 +1,7 @@
 #!/bin/bash
 
-./rjps_time_by_params.py -gen
+#./rjps_time_by_params.py -gen
 ./rjps_time_by_params.py
-git add .
-git commit -m 'auto test run'
+git add stats_rjps.csv
+git commit -m 'auto run rjpstest'
 git push origin master
-
