@@ -29,8 +29,8 @@ dist = [#487.6, 464.8, 496.7, 459.7, 469.0,
 RUN_NUMBER = len(ls)
 REPEAT_TIMES = 1
 
-LSSL_RANGE = list(range(2, 20, 2))
-NUMBER_OF_SUCC_VALUE_RANGE = list(range(1, 40, 4))
+LSSL_RANGE = list(range(2, 12, 2))
+NUMBER_OF_SUCC_VALUE_RANGE = list(range(1, 41, 4))
 
 def gen():
     start_time = time()
@@ -82,7 +82,7 @@ def gen():
 def main():
     start_time = time()
 
-    stats_file = open("stats.csv", "w", newline="", encoding="utf-8")
+    stats_file = open("stats.csv", "w", newline="", encoding="utf-8", buffering=1)
     stats = csv.writer(stats_file, delimiter=",")
 
     stats.writerow([""] + LSSL_RANGE)
