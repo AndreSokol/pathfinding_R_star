@@ -111,14 +111,14 @@ SearchResult RJPSearch::startSearch(ILogger *logger, const Map &map, const Envir
 
                 calculateHeuristic(child_node, map, options);
 
+                if (!isNodePerpective(child_node, map, options)) child_node.AVOID = true;
+
                 open.push(child_node);
             }
         }
         else if(!current_node.AVOID) {
             current_node.AVOID = true;
-            // Recount heuristics
-            current_node.F += local_search_step_limit;
-            open.push(current_node);
+                open.push(current_node);
         }
         sresult.numberofsteps += 1;
     }
@@ -175,8 +175,8 @@ SearchResult RJPSearch::findLocalPath(const Node &node, const Node &parent_node,
         }
         return localSearchResult;
     }
-
-    JPSearch localSearch(hweight, breakingties, localSearchStepLimit);
+    std::cerr << "JP ran\n";
+    JPSearch localSearch(hweight, breakingties, 0); // no limit
     localSearch.setAlternativePoints(parent_node, node);
     localSearchResult = localSearch.startSearch(logger, map, options);
 
@@ -197,6 +197,30 @@ void RJPSearch::calculateHeuristic(Node & a, const Map &map, const EnvironmentOp
     else a.H = std::max(di, dj) * options.linecost;
 
     a.F += hweight * a.H;
+}
+
+bool RJPSearch::isNodePerpective(Node &a, const Map &map, const EnvironmentOptions &options) {
+    double H, dH; // H - start to a, dH - a to a.parent
+
+    int di = abs(a.i - map.start_i),
+        dj = abs(a.j - map.start_j);
+
+    if(options.metrictype == CN_SP_MT_EUCL)       H = sqrt(di * di + dj * dj) * options.linecost;
+    else if (options.metrictype == CN_SP_MT_MANH) H = (di + dj) * options.linecost;
+    else if (options.metrictype == CN_SP_MT_DIAG) H = std::min(di, dj) * options.diagonalcost +
+                                                                        abs(di - dj) * options.linecost;
+    else H = std::max(di, dj) * options.linecost;
+
+    /*di = abs(a.i - a.parent->i);
+    dj = abs(a.j - a.parent->j);
+
+    if(options.metrictype == CN_SP_MT_EUCL)       dH = sqrt(di * di + dj * dj) * options.linecost;
+    else if (options.metrictype == CN_SP_MT_MANH) dH = (di + dj) * options.linecost;
+    else if (options.metrictype == CN_SP_MT_DIAG) dH = std::min(di, dj) * options.diagonalcost +
+                                                                        abs(di - dj) * options.linecost;
+    else dH = std::max(di, dj) * options.linecost;*/
+
+    return (a.parent->g + distance_to_successors < hweight * H);
 }
 
 std::vector<std::pair<int, int> > RJPSearch::generateSuccessors(const Node &node, const Map &map,

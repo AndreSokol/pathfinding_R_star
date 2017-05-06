@@ -525,17 +525,17 @@
         </grid>
     </map>
     <algorithm>
-        <hweight>1</hweight>
+        <hweight>3</hweight>
         <metrictype>euclid</metrictype>
         <breakingties>g-max</breakingties>
         <linecost>10</linecost>
         <diagonalcost>14</diagonalcost>
         <bottleneck>0</bottleneck>
         <allowdiagonal>1</allowdiagonal>
-        <searchtype>astar</searchtype>
-        <distancetosuccessors>20</distancetosuccessors>
-        <numberofsuccessors>10</numberofsuccessors>
-        <localsearchsteplimit>40</localsearchsteplimit>
+        <searchtype>rstar</searchtype>
+        <distancetosuccessors>40</distancetosuccessors>
+        <numberofsuccessors>80</numberofsuccessors>
+        <localsearchsteplimit>200</localsearchsteplimit>
     </algorithm>
     <options>
         <loglevel>1</loglevel>
