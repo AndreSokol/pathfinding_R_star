@@ -46,8 +46,6 @@ RJPSearch::~RJPSearch()
 SearchResult RJPSearch::startSearch(ILogger *logger, const Map &map, const EnvironmentOptions &options) {
     auto start_time = std::chrono::system_clock::now();
 
-    std::cerr << "RJPS\n";
-
     generateCirleOfSuccessors();
 
     std::unordered_set<Node> closed;
@@ -175,7 +173,6 @@ SearchResult RJPSearch::findLocalPath(const Node &node, const Node &parent_node,
         }
         return localSearchResult;
     }
-    std::cerr << "JP ran\n";
     JPSearch localSearch(hweight, breakingties, 0); // no limit
     localSearch.setAlternativePoints(parent_node, node);
     localSearchResult = localSearch.startSearch(logger, map, options);
