@@ -29,8 +29,8 @@ dist = [#487.6, 464.8, 496.7, 459.7, 469.0,
 RUN_NUMBER = len(ls)
 REPEAT_TIMES = 1
 
-DIST_TO_SUCC_VALUE_RANGE = list(range(1, 101, 10))
-NUMBER_OF_SUCC_VALUE_RANGE = list(range(1, 101, 10))
+DIST_TO_SUCC_VALUE_RANGE = list(range(10, 41, 5))
+NUMBER_OF_SUCC_VALUE_RANGE = list(range(1, 21, 2))
 
 def gen():
     start_time = time()
@@ -82,7 +82,7 @@ def gen():
 def main():
     start_time = time()
 
-    stats_file = open("stats_rjps.csv", "w", newline="", encoding="utf-8")
+    stats_file = open("stats_rjps.csv", "w", newline="", encoding="utf-8", buffering=1)
     stats = csv.writer(stats_file, delimiter=",")
 
     stats.writerow([""] + DIST_TO_SUCC_VALUE_RANGE)
@@ -135,12 +135,12 @@ def plot():
             x=z_data.columns,
             y=z_data.index,
             colorscale=[[0, 'rgb(230,230,230)'], [1, 'rgb(20,20,20)']],
-            zmax=0.1,
+            zmax=1,
             zmin=0,
         )
     ]
     layout = go.Layout(
-        title='RJPS heatmap, metrics=' + test_stats[1] + ', hweight=' + test_stats[2],
+        title='RJPS, metrics=' + test_stats[1] + ', hweight=' + test_stats[2],
         xaxis= dict(
             title= 'Distance to successors',
             #ticklen= 5,

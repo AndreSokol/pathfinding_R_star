@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from PIL import Image, ImageDraw
 import os, sys
 
@@ -32,7 +34,7 @@ if MAP_ONLY:
 
     start = [];
     finish = [];
-    
+
     newline = testedFile.readline().strip()
     while newline[0:6] != "<start":
         if newline == "":
@@ -45,12 +47,12 @@ if MAP_ONLY:
     start.append(int(newline[8:-9]))
 
     print("Start point detected:", "(" + str(start[0]) + ", " + str(start[1]) + ")")
-    
+
     newline = testedFile.readline().strip()
     finish.append(int(newline[9:-10]))
     newline = testedFile.readline().strip()
     finish.append(int(newline[9:-10]))
-    
+
     print("Finish point detected:", "(" + str(finish[0]) + ", " + str(finish[1]) + ")")
 
     newline = testedFile.readline().strip()
@@ -96,7 +98,7 @@ for i in range(len(mapContainer)):
 if MAP_ONLY:
     drawSquare(start[0], start[1], RED_COLOR)
     drawSquare(finish[0], finish[1], YELLOW_COLOR)
-    
+
     im.save("test_image.bmp")
     print("Image generated\nStart is RED, finish is YELLOW")
     exit()

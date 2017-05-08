@@ -82,7 +82,7 @@ def gen():
 def main():
     start_time = time()
 
-    stats_file = open("stats.csv", "w", newline="", encoding="utf-8", buffering=1)
+    stats_file = open("stats.csv", "w", newline="", encoding="utf-8", bufferring=1)
     stats = csv.writer(stats_file, delimiter=",")
 
     stats.writerow([""] + LSSL_RANGE)
