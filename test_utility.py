@@ -8,23 +8,29 @@ def drawSquare(xOffset, yOffset, color):
     im_draw.rectangle([xOffset * BLOCK_SIZE, yOffset * BLOCK_SIZE, (xOffset + 1) * BLOCK_SIZE, (yOffset + 1) * BLOCK_SIZE], color)
 
 
-if len(sys.argv) not in (3, 4):
-    print("Usage: " + sys.argv[0] + " <path_to_xml_file> <cell_size_in_pixels> [-map_only|-theta]")
+if len(sys.argv) not in (3, 4, 5):
+    print("Usage: " + sys.argv[0] + " <path_to_xml_file> <cell_size_in_pixels> [-map_only|-theta] [-grid]")
     exit()
 
 MAP_ONLY = False
 THETA = False
-if len(sys.argv) == 4:
+GRID = False
+if len(sys.argv) >= 4:
     if sys.argv[3] == "-map_only":
         MAP_ONLY = True
     elif sys.argv[3] == "-theta":
         THETA = True
+
+if len(sys.argv) >= 5:
+    if sys.argv[4] == "-grid":
+        GRID = True
 
 BLOCK_SIZE = int(sys.argv[2])
 BLACK_COLOR = (0, 0, 0)
 WHITE_COLOR = (255, 255, 255)
 RED_COLOR = (255, 0, 0)
 YELLOW_COLOR = (255, 191, 0)
+GRAY_COLOR = (192, 192, 192)
 
 pathToTestedFile = os.path.abspath(sys.argv[1])
 print("Generating from file: '" + pathToTestedFile + "'...")
@@ -86,6 +92,12 @@ else:
 
 im = Image.new("RGB", (len(mapContainer) * BLOCK_SIZE, len(mapContainer[0]) * BLOCK_SIZE), "white")
 im_draw = ImageDraw.Draw(im)
+
+if GRID:
+    for i in range(1, len(mapContainer)):
+        im_draw.rectangle([i * BLOCK_SIZE, 0, i * BLOCK_SIZE + 1, len(mapContainer[0]) * BLOCK_SIZE], GRAY_COLOR)
+    for j in range(1, len(mapContainer[0])):
+        im_draw.rectangle([0, j * BLOCK_SIZE, len(mapContainer) * BLOCK_SIZE, j * BLOCK_SIZE + 1], GRAY_COLOR)
 
 for i in range(len(mapContainer)):
     for j in range(len(mapContainer[0])):
