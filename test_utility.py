@@ -21,9 +21,8 @@ if len(sys.argv) >= 4:
     elif sys.argv[3] == "-theta":
         THETA = True
 
-if len(sys.argv) >= 5:
-    if sys.argv[4] == "-grid":
-        GRID = True
+if sys.argv[-1] == "-grid":
+    GRID = True
 
 BLOCK_SIZE = int(sys.argv[2])
 BLACK_COLOR = (0, 0, 0)
